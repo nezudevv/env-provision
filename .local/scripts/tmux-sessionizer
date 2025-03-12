@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-selected=$(find ~/Developer/FreightWise/FreightWise/services ~/Developer/FreightWise/FreightWise/lambda ~/Developer/FreightWise -mindepth 1 -maxdepth 1 -type d | fzf)
+selected=$(find ~/Developer/FreightWise/FreightWise/services ~/Developer/FreightWise/FreightWise/lambda ~/Developer/FreightWise ~/.local ~/dev-env -mindepth 1 -maxdepth 1 -type d | fzf)
 if [[ -z "$selected" ]]; then
 	exit 0
 fi
@@ -35,6 +35,17 @@ move_server_window_if_running() {
         echo "Moving window $window_id from $SERVER_SESSION to session $selected_name..."
         tmux move-window -s "$SERVER_SESSION:$window_id" -t "$selected_name:"
 	tmux select-window -t "$selected_name:0"
+    else
+	echo " made it here 1111"
+        # 🚨 No window found → Check for package-lock.json and start the server
+	if [[ -f "$selected/package-lock.json" ]]; then
+	    echo " made it here 2222"
+	    echo "No window found. Found package-lock.json in $selected. Installing dependencies and starting server..."
+	    # ✅ Create a new tmux window and run npm commands
+	    tmux new-window -t "$selected_name:" -n "server" -c "$selected" "bash -c 'npm ci && npm run dev'"
+	else
+	    echo "No window found and no package-lock.json detected in $selected. Doing nothing."
+	fi
     fi
 }
 
