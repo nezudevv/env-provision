@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+selected=$(find ~/Developer/FreightWise/FreightWise/services ~/Developer/FreightWise/FreightWise/lambda ~/Developer/FreightWise -mindepth 1 -maxdepth 1 -type d | fzf)
+if [[ -z "$selected" ]]; then
+	exit 0
+fi
+
+selected_name=$(basename $selected | tr ":,. " "____")
+
+switch_to() {
+	if [[ -z "$TMUX" ]]; then
+		tmux attach-session -t $selected_name
+	else 
+		tmux switch-client -t $selected_name
+	fi
+}
+if tmux has-session -t=$selected_name 2> /dev/null; then
+	switch_to
+	exit 0
+fi
+
+# Function to find and move a matching window based on basename comparison
+move_server_window_if_running() {
+    local SERVER_SESSION="fw-servers"
+    local window_id
+    local selected_basename=$(basename "$selected")  # Get only the directory name
+    echo "here: $selected_basename"
+
+    # Find windows in SERVER_SESSION, extract their basenames, and match with $selected_basename
+    window_id=$(tmux list-windows -t "$SERVER_SESSION" -F "#{window_index} #{pane_current_path}" | \
+    awk -v selbase="$selected_basename" '{ gsub(".*/", "", $2); if (selbase == $2) print $1 }')
+
+    # If found, move it to the new session
+    if [[ -n "$window_id" ]]; then
+        echo "Moving window $window_id from $SERVER_SESSION to session $selected_name..."
+        tmux move-window -s "$SERVER_SESSION:$window_id" -t "$selected_name:"
+	tmux select-window -t "$selected_name:0"
+    fi
+}
+
+tmux new-session -ds $selected_name -c $selected
+switch_to
+tmux send-keys -t $selected_name "ready-tmux" ^M
+
+move_server_window_if_running

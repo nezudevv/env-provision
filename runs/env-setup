@@ -53,5 +53,6 @@ copy_file() {
 	execute cp $from $to/$name
 }
 
+copy_dir .local  ~/.local
 copy_dir .config ~/.config
-# copy_file ~/dev-env/runs/.specialconfig ~/
+copy_file ~/dev-env/runs/libs ~/lib
