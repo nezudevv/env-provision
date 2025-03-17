@@ -19,38 +19,6 @@ if tmux has-session -t=$selected_name 2> /dev/null; then
 	exit 0
 fi
 
-# Function to find and move a matching window based on basename comparison
-move_server_window_if_running() {
-    local SERVER_SESSION="fw-servers"
-    local window_id
-    local selected_basename=$(basename "$selected")  # Get only the directory name
-    echo "here: $selected_basename"
-
-    # Find windows in SERVER_SESSION, extract their basenames, and match with $selected_basename
-    window_id=$(tmux list-windows -t "$SERVER_SESSION" -F "#{window_index} #{pane_current_path}" | \
-    awk -v selbase="$selected_basename" '{ gsub(".*/", "", $2); if (selbase == $2) print $1 }')
-
-    # If found, move it to the new session
-    if [[ -n "$window_id" ]]; then
-        echo "Moving window $window_id from $SERVER_SESSION to session $selected_name..."
-        tmux move-window -s "$SERVER_SESSION:$window_id" -t "$selected_name:"
-	tmux select-window -t "$selected_name:0"
-    else
-	echo " made it here 1111"
-        # 🚨 No window found → Check for package-lock.json and start the server
-	if [[ -f "$selected/package-lock.json" ]]; then
-	    echo " made it here 2222"
-	    echo "No window found. Found package-lock.json in $selected. Installing dependencies and starting server..."
-	    # ✅ Create a new tmux window and run npm commands
-	    tmux new-window -t "$selected_name:" -n "server" -c "$selected" "bash -c 'npm ci && npm run dev'"
-	else
-	    echo "No window found and no package-lock.json detected in $selected. Doing nothing."
-	fi
-    fi
-}
-
 tmux new-session -ds $selected_name -c $selected
 switch_to
 tmux send-keys -t $selected_name "ready-tmux" ^M
-
-move_server_window_if_running

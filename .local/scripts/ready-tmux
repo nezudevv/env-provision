@@ -4,5 +4,7 @@ if [[ -x ".ready-tmux" ]]; then
 	./.ready-tmux
 elif [[ -x "$HOME/.ready-tmux" ]]; then
 	~/.ready-tmux
+elif [[ -x "$HOME/Developer/FreightWise/FreightWise/.ready-tmux" ]]; then
+	~/Developer/FreightWise/FreightWise/.ready-tmux
 fi
 clear
