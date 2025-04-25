@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-selected=$(find ~/Developer/FreightWise/FreightWise/services ~/Developer/FreightWise/FreightWise/lambda ~/Developer/FreightWise ~/Developer/FreightWise/FreightWise/lambda/sam_functions/functions ~/.local ~/dev-env -mindepth 1 -maxdepth 1 -type d | fzf)
+selected=$(find ~/Developer/FreightWise/FreightWise/services ~/Developer/FreightWise/FreightWise/lambda ~/Developer/FreightWise ~/Developer/FreightWise/FreightWise/lambda/sam_functions/functions ~/dev-env/.local ~/dev-env -mindepth 1 -maxdepth 1 -type d | fzf)
 if [[ -z "$selected" ]]; then
 	exit 0
 fi
