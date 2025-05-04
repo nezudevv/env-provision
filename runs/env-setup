@@ -54,9 +54,11 @@ copy_file() {
 }
 
 copy_dir .local  ~/.local
-copy_dir .config ~/.config
+# copy_dir .config ~/.config
 
-copy_file ~/dev-env/runs/libs ~/lib
+# copy_file ~/dev-env/runs/libs ~/lib
 
 # setup obsidian vaults
 ln -s ~/dev-env/.local/vaults ~/.local/vaults
+#
+# copy_file ~/dev-env/runs/libs ~/lib
