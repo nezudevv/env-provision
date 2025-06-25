@@ -1,3 +1,4 @@
 # or nord-wave
-theme = nord
+# theme = nord
 font-family = CommitMono Nerd Font Mono
+theme = gruvbox-material
