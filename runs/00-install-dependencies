@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+
+set -e  # Exit on error
+
+log() {
+	echo "➜ $@"
+}
+
+error() {
+	echo "✗ $@" >&2
+	exit 1
+}
+
+success() {
+	echo "✓ $@"
+}
+
+log "--------- Installing Dependencies ---------"
+
+# Check if Homebrew is installed
+if ! command -v brew &> /dev/null; then
+	error "Homebrew not found. Install it first:
+	/bin/bash -c \"\$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\""
+fi
+
+success "Homebrew installed"
+
+# Install Homebrew packages
+log "Installing Homebrew packages..."
+brew_packages=(
+	tmux
+	fzf
+	zoxide
+	gnu-sed  # gsed
+	neovim
+	git
+	zed
+	zsh-syntax-highlighting
+	nvm
+)
+
+for package in "${brew_packages[@]}"; do
+	if brew list "$package" &>/dev/null; then
+		log "$package already installed"
+	else
+		log "Installing $package..."
+		brew install "$package"
+	fi
+done
+
+success "Homebrew packages installed"
+
+# Install Powerlevel10k via Homebrew
+log "Installing Powerlevel10k..."
+if brew list powerlevel10k &>/dev/null; then
+	log "Powerlevel10k already installed"
+else
+	brew install romkatv/powerlevel10k/powerlevel10k
+	success "Powerlevel10k installed"
+fi
+
+# Install Oh My Zsh
+log "Installing Oh My Zsh..."
+if [ -d "$HOME/.oh-my-zsh" ]; then
+	log "Oh My Zsh already installed"
+else
+	sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+	success "Oh My Zsh installed"
+fi
+
+# Install fzf shell integration
+log "Installing fzf shell integration..."
+if [ -f "$HOME/.fzf.zsh" ]; then
+	log "fzf already configured"
+else
+	"$(brew --prefix)"/opt/fzf/install --key-bindings --completion --no-update-rc --no-bash --no-fish
+	success "fzf configured"
+fi
+
+# Install tmux plugin manager (TPM)
+log "Installing tmux plugin manager..."
+if [ -d "$HOME/.tmux/plugins/tpm" ]; then
+	log "TPM already installed"
+else
+	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+	success "TPM installed"
+fi
+
+# Install Nerd Fonts
+log "Installing Nerd Fonts..."
+brew tap homebrew/cask-fonts 2>/dev/null || true
+
+fonts=(
+	font-jetbrains-mono-nerd-font
+	font-commit-mono-nerd-font
+)
+
+for font in "${fonts[@]}"; do
+	if brew list --cask "$font" &>/dev/null; then
+		log "$font already installed"
+	else
+		log "Installing $font..."
+		brew install --cask "$font"
+	fi
+done
+
+success "Nerd Fonts installed"
+
+log ""
+log "✓ All dependencies installed!"
+log ""
+log "Next steps:"
+log "  1. Run: ./run"
+log "  2. Restart your terminal"
+log "  3. Configure Powerlevel10k: p10k configure"

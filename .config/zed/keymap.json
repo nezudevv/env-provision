@@ -1,0 +1,52 @@
+// To see the default key bindings run `zed: open default keymap`
+// from the command palette.
+[
+  {
+    // Global
+    "bindings": {
+      "ctrl-h": "workspace::ActivatePaneLeft",
+      "ctrl-l": "workspace::ActivatePaneRight",
+      "ctrl-k": "workspace::ActivatePaneUp",
+      "ctrl-j": "workspace::ActivatePaneDown",
+      "shift-tab": "menu::SelectPrevious",
+      "tab": "menu::SelectNext"
+    }
+  },
+  {
+    "context": "Editor && vim_mode == normal && !VimWaiting && !menu",
+    "bindings": {
+      "space g s": ["task::Spawn", { "task_name": "Git Status (Fugitive-like)" }],
+      ";": "command_palette::Toggle",
+      "-":  ["workspace::SendKeystrokes", "cmd-b"],
+      "space h s": "git::ToggleStaged",
+      "space h r": "git::Restore",
+      "space o": "outline::Toggle",
+      "space c a": "editor::ToggleCodeActions",
+      "shift-u": "editor::Redo",
+      "space f": "editor::Format",
+      "space x": "pane::CloseActiveItem",
+      "tab": "pane::ActivateNextItem",
+      "shift-tab": "pane::ActivatePreviousItem",
+      "[c": "editor::GoToPreviousChange",
+      "]c": "editor::GoToNextChange",
+      "[d": "editor::GoToPreviousDiagnostic",
+      "]d": "editor::GoToDiagnostic",
+      // "space g s": "git_panel::ToggleFocus",
+      "space s f": "file_finder::Toggle"
+    }
+  },
+  {
+    "context": "Editor",
+    "bindings": {
+      "ctrl-enter": "editor::AcceptEditPrediction"
+    }
+  },
+  {
+    // visual, visual line & visual block modes
+    "context": "Editor && vim_mode == visual && !VimWaiting && !menu",
+    "bindings": {
+      "J": ["workspace::SendKeystrokes", "alt-down"],
+      "K": ["workspace::SendKeystrokes", "alt-up"]
+    }
+  }
+]

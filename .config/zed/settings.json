@@ -1,0 +1,164 @@
+{
+  "language_models": {
+    // "bedrock": {
+    //   "authentication_method": "sso"
+    // }
+    "anthropic": {
+      "api_url": "bedrock",
+      "available_models": [
+        {
+          "display_name": "us.anthropic.claude-sonnet-4-5-20250929-v1:0",
+          "name": "Claude Sonnet 4.5 (Bedrock)",
+          "max_tokens": 200000
+        }
+      ]
+    }
+  },
+  "diagnostics": {
+    "include_warnings": true,
+    "inline": {
+      "enabled": true
+    }
+  },
+  "vertical_scroll_margin": 10,
+  "context_servers": {},
+  "agent_servers": {
+    "your_agent": {
+      "command": "path_to_executable",
+      "args": [],
+      "env": {}
+    }
+  },
+  "format_on_save": "off",
+  "edit_predictions": {
+    "mode": "subtle",
+    "copilot": {
+      "proxy": null,
+      "proxy_no_verify": null
+    },
+    "enabled_in_text_threads": false
+  },
+  "soft_wrap": "editor_width",
+  "show_completions_on_input": false,
+  "agent": {
+    "use_modifier_to_send": true,
+    "play_sound_when_agent_done": true,
+    "always_allow_tool_actions": true,
+    "default_profile": "write",
+    "default_model": {
+      "provider": "google",
+      "model": "gemini-2.5-pro"
+    }
+  },
+  "git": {
+    "git_gutter": "tracked_files",
+    "inline_blame": {
+      "enabled": true
+    },
+    "hunk_style": "staged_hollow"
+  },
+  "icon_theme": "Catppuccin Frappé",
+  "features": {
+    "edit_prediction_provider": "zed"
+  },
+  "base_keymap": "VSCode",
+  "theme": "Catppuccin Macchiato (Blur)",
+  "ui_font_size": 17,
+  "buffer_font_size": 18,
+  // Finder model width
+  "file_finder": {},
+  // NOTE: Change the font family to your preference
+  "buffer_font_family": "JetBrainsMono Nerd Font",
+  "ui_font_family": "JetBrainsMono Nerd Font",
+  // Vim mode settings
+  "vim_mode": true,
+  "vim": {
+    "use_system_clipboard": "always"
+  },
+  "preview_tabs": {
+    "enabled": false
+  },
+  // Inlay hints preconfigured by Zed: Go, Rust, Typescript and Svelte
+  "inlay_hints": {
+    "enabled": true
+  },
+  // LSP
+  "lsp": {
+    "tailwindcss-language-server": {
+      "settings": {
+        "classAttributes": ["class", "className", "ngClass", "styles"]
+      }
+    }
+  },
+  "languages": {
+    // Refer https://zed.dev/docs/languages/javascript and https://zed.dev/docs/languages/typescript for more info
+    "TypeScript": {
+      // Refer https://github.com/jellydn/ts-inlay-hints for how to setup for Neovim and VSCode
+      "inlay_hints": {
+        "enabled": true,
+        "show_parameter_hints": false,
+        "show_other_hints": true,
+        "show_type_hints": true
+      }
+    },
+    "Python": {
+      // "format_on_save": { "language_server": { "name": "ruff" } },
+      "formatter": { "language_server": { "name": "ruff" } },
+      "language_servers": ["pyright", "ruff"]
+    }
+  },
+  "file_types": {
+    "Dockerfile": ["Dockerfile", "Dockerfile.*"],
+    "JSON": ["json", "jsonc", "*.code-snippets"]
+  },
+  // File scan exclusions, hide on the file explorer and search
+  "file_scan_exclusions": [
+    "**/.git",
+    "**/.svn",
+    "**/.hg",
+    "**/CVS",
+    "**/.DS_Store",
+    "**/Thumbs.db",
+    "**/.classpath",
+    "**/.settings",
+    // above is default from Zed
+    "**/out",
+    "**/dist",
+    "**/.husky",
+    "**/.turbo",
+    "**/.vscode-test",
+    "**/.vscode",
+    "**/.next",
+    "**/.storybook",
+    "**/.tap",
+    "**/.nyc_output",
+    "**/report",
+    "**/node_modules"
+  ],
+  // Turn off telemetry
+  "telemetry": {
+    "diagnostics": false,
+    "metrics": false
+  },
+  // Move all panel to the right
+  "project_panel": {
+    "button": true,
+    "dock": "left",
+    "git_status": true
+  },
+  "toolbar": {
+    "breadcrumbs": true,
+    "quick_actions": false,
+    "selections_menu": false
+  },
+  "outline_panel": {
+    "dock": "right"
+  },
+  "collaboration_panel": {
+    "dock": "left"
+  },
+  // Move some unnecessary panels to the left
+  "notification_panel": {
+    "dock": "left"
+  }
+}

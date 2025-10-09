@@ -1,0 +1,33 @@
+[
+  {
+    "label": "blah",
+    "command": "fzf",
+    "use_new_terminal": true,
+    "args": ["$ZED_FILE"],
+    "shell": "system",
+    "hide": "on_success"
+  },
+  {
+    "label": "File Finder",
+    "command": "zed \"$(tv files)\"",
+    "hide": "always",
+    "allow_concurrent_runs": true,
+    "use_new_terminal": true
+  },
+  {
+    "label": "Find in Files",
+    "command": "zed \"$(tv text)\"",
+    "hide": "always",
+    "allow_concurrent_runs": true,
+    "use_new_terminal": true
+  },
+  {
+    "label": "Fugitive (nvim)",
+    "command": "nvim",
+    // "args": ["-c", "Git status"],
+    "use_new_terminal": true,
+    "allow_concurrent_runs": false,
+    "reveal": "always",
+    "hide": "never"
+  }
+]

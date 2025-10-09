@@ -1,0 +1,18 @@
+[user]
+	email = mbreaux@freightwisellc.com
+	name = Nezudevv
+[core]
+	editor = vim
+[filter "lfs"]
+	required = true
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+[alias]
+	co = checkout
+  s = status
+  fp = push --force-with-lease
+[pull]
+	rebase = true
+[push]
+	autoSetupRemote = true

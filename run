@@ -33,7 +33,8 @@ execute() {
 log "$script_dir -- $filter"
 
 cd $script_dir
-scripts=$(find ./runs -maxdepth 1 -mindepth 1 -type f -perm +111)
+# Find executable scripts and sort them (for numbered scripts like 01-, 02-, etc)
+scripts=$(find ./runs -maxdepth 1 -mindepth 1 -type f -perm +111 | sort)
 
 for script in $scripts; do
 	if echo "$script" | grep -qv "$filter"; then
