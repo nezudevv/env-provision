@@ -6,6 +6,9 @@ SEARCH_PATHS=(
 	"$HOME/env-provision"
 )
 
+# Max depth to search (1=direct children, 2=grandchildren, 3=great-grandchildren, etc.)
+MAX_DEPTH=4
+
 # Build find command for existing paths only
 find_paths=()
 for path in "${SEARCH_PATHS[@]}"; do
@@ -18,7 +21,25 @@ if [ ${#find_paths[@]} -eq 0 ]; then
 	exit 1
 fi
 
-selected=$(find "${find_paths[@]}" -mindepth 1 -maxdepth 1 -type d 2>/dev/null | fzf)
+# Exclude auto-generated directories
+selected=$(find "${find_paths[@]}" -mindepth 1 -maxdepth "$MAX_DEPTH" \
+	-type d \( \
+		-name ".git" -o \
+		-name "node_modules" -o \
+		-name ".vscode" -o \
+		-name ".idea" -o \
+		-name "dist" -o \
+		-name "build" -o \
+		-name "out" -o \
+		-name ".next" -o \
+		-name ".nuxt" -o \
+		-name "coverage" -o \
+		-name ".nyc_output" -o \
+		-name ".turbo" -o \
+		-name "target" -o \
+		-name "vendor" -o \
+		-name "extensions" \
+	\) -prune -o -type d -print 2>/dev/null | fzf)
 
 if [[ -z "$selected" ]]; then
 	exit 0
