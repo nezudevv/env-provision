@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+
+script_dir=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+dry="0"
+
+while [[ $# > 0 ]]; do
+	if [[ $1 == "--dry" ]]; then
+		dry="1"
+	fi
+	shift
+done
+
+log() {
+	if [[ $dry == "1" ]]; then
+		echo "[DRY_RUN]: $@"
+	else
+		echo "➜ $@"
+	fi
+}
+
+execute() {
+	if [[ $dry == "1" ]]; then
+		log "would execute: $@"
+		return
+	fi
+	"$@"
+}
+
+success() {
+	log "✓ $@"
+}
+
+log "--------- Refreshing Tmux Plugins ---------"
+
+TPM_DIR="$HOME/.tmux/plugins/tpm"
+PLUGINS_DIR="$HOME/.tmux/plugins"
+
+# Check if TPM exists
+if [ ! -d "$TPM_DIR" ]; then
+	log "TPM not found, installing first..."
+	execute git clone https://github.com/tmux-plugins/tpm "$TPM_DIR"
+fi
+
+# Clean all plugins except TPM itself
+log "Cleaning old plugins (keeping TPM)..."
+if [ -d "$PLUGINS_DIR" ]; then
+	for plugin in "$PLUGINS_DIR"/*; do
+		plugin_name=$(basename "$plugin")
+		if [ "$plugin_name" != "tpm" ] && [ -d "$plugin" ]; then
+			log "Removing $plugin_name..."
+			execute rm -rf "$plugin"
+		fi
+	done
+	success "Old plugins cleaned"
+fi
+
+# Reinstall all plugins from tmux.conf
+log "Installing plugins from tmux.conf..."
+if [ -f "$TPM_DIR/bin/install_plugins" ]; then
+	execute "$TPM_DIR/bin/install_plugins"
+	success "Plugins installed"
+else
+	log "TPM install script not found!"
+	exit 1
+fi
+
+# Reload tmux if running
+if command -v tmux &> /dev/null && tmux info &> /dev/null; then
+	log "Reloading tmux configuration..."
+	execute tmux source-file ~/.config/tmux/tmux.conf
+	success "Tmux config reloaded"
+fi
+
+log ""
+success "Tmux plugins refreshed! Restart tmux sessions to see changes."

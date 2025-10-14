@@ -66,7 +66,6 @@ execute mkdir -p "$HOME/.config"
 config_dirs=(
 	"git"
 	"tmux"
-	"nvimmmm"
 	"ghostty"
 	"zed"
 )

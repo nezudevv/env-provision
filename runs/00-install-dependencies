@@ -86,6 +86,15 @@ else
 	success "TPM installed"
 fi
 
+# Install tmux plugins automatically
+log "Installing tmux plugins..."
+if [ -f "$HOME/.tmux/plugins/tpm/bin/install_plugins" ]; then
+	"$HOME/.tmux/plugins/tpm/bin/install_plugins"
+	success "Tmux plugins installed"
+else
+	log "TPM not found, skipping plugin installation"
+fi
+
 # Install Nerd Fonts
 log "Installing Nerd Fonts..."
 brew tap homebrew/cask-fonts 2>/dev/null || true
@@ -100,11 +109,12 @@ for font in "${fonts[@]}"; do
 		log "$font already installed"
 	else
 		log "Installing $font..."
-		brew install --cask "$font"
+		# Use || true to continue if font files already exist (installed manually)
+		brew install --cask "$font" 2>/dev/null || log "$font already exists on system"
 	fi
 done
 
-success "Nerd Fonts installed"
+success "Nerd Fonts checked"
 
 log ""
 log "✓ All dependencies installed!"

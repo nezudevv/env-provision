@@ -62,7 +62,7 @@
     "edit_prediction_provider": "zed"
   },
   "base_keymap": "VSCode",
-  "theme": "Catppuccin Macchiato (Blur)",
+  "theme": "Nightfox - blurred",
   "ui_font_size": 17,
   "buffer_font_size": 18,
   // Finder model width
@@ -87,6 +87,20 @@
     "tailwindcss-language-server": {
       "settings": {
         "classAttributes": ["class", "className", "ngClass", "styles"]
+      }
+    },
+    "jdtls": {
+      "initialization_options": {
+        "settings": {
+          "java.import.exclusions": [
+            "**/node_modules/**",
+            "**/.metadata/**",
+            "**/archetype-resources/**",
+            "**/META-INF/maven/**",
+            "**/src/main/resources/templates",
+            "**/build/**"
+          ]
+        }
       }
     }
   },
