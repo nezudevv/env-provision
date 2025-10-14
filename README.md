@@ -64,9 +64,9 @@ env-provision/
 ├── .config/
 │   ├── git/            → ~/.config/git/
 │   ├── tmux/           → ~/.config/tmux/
+│   ├── nvim/           → ~/.config/nvim/
 │   ├── zed/            → ~/.config/zed/
-│   ├── ghostty/        → ~/.config/ghostty/
-│   └── nvimmmm/        → ~/.config/nvimmmm/
+│   └── ghostty/        → ~/.config/ghostty/
 └── .local/
     ├── scripts/        → ~/.local/scripts/
     └── vaults/         → ~/.local/vaults/
@@ -89,6 +89,7 @@ To add new tools/configs:
 
 - **00-install-dependencies** - Install all tools/dependencies (run once)
 - **01-symlink-configs** - Symlink all config files (run via `./run`)
+- **02-refresh-tmux-plugins** - Clean and reinstall tmux plugins
 - **run** - Main script that executes all numbered scripts in order
 
 ## Customization
@@ -103,4 +104,4 @@ To add new tools/configs:
 
 **Missing fonts in Zed/Ghostty:** Run `brew install --cask font-jetbrains-mono-nerd-font font-commit-mono-nerd-font`
 
-**tmux plugins not loading:** Open tmux and press `prefix + I` (Ctrl-Space + I) to install plugins.
+**tmux plugins not loading:** Run `./runs/02-refresh-tmux-plugins` to cleanly reinstall all plugins.

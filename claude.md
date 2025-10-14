@@ -25,7 +25,7 @@ When possible, dependencies are installed via Homebrew (not manual git clones or
 Scripts in `runs/` are executed in alphabetical order:
 - `00-install-dependencies` - Install all tools/dependencies (run once on fresh Mac)
 - `01-symlink-configs` - Symlink all config files
-- `03-refresh-tmux-plugins` - Clean and reinstall tmux plugins (fixes plugin detection issues)
+- `02-refresh-tmux-plugins` - Clean and reinstall tmux plugins (fixes plugin detection issues)
 
 ## Directory Structure
 
@@ -59,7 +59,7 @@ env-provision/
 └── runs/                       # Provisioning scripts (executable)
     ├── 00-install-dependencies # Install all tools via Homebrew
     ├── 01-symlink-configs      # Symlink all configs to ~/
-    └── 03-refresh-tmux-plugins # Clean and reinstall tmux plugins
+    └── 02-refresh-tmux-plugins # Clean and reinstall tmux plugins
 ```
 
 ## Key Files & Their Purpose
@@ -97,7 +97,7 @@ Installs everything needed for fresh Mac:
 
 **Note:** Neovim config (`.config/nvim/`) is tracked directly in this repo, not as a separate git submodule.
 
-### `runs/03-refresh-tmux-plugins`
+### `runs/02-refresh-tmux-plugins`
 Fixes tmux plugin detection issues (TPM doesn't always detect new plugins properly):
 - Deletes all plugins except TPM itself
 - Reinstalls all plugins from `tmux.conf`
@@ -109,7 +109,7 @@ Fixes tmux plugin detection issues (TPM doesn't always detect new plugins proper
 **Usage:**
 ```bash
 ./run tmux                        # Run via main script with filter
-./runs/03-refresh-tmux-plugins    # Run directly
+./runs/02-refresh-tmux-plugins    # Run directly
 ```
 
 ### `.local/scripts/tmux-sessionizer`
@@ -144,7 +144,7 @@ source $(brew --prefix)/share/powerlevel10k/powerlevel10k.zsh-theme
 **Never** change these to hardcoded paths or git clone installs.
 
 ### 2. tmux Plugin Installation
-TPM plugins are auto-installed by `00-install-dependencies`. When adding new plugins to `tmux.conf`, run `./runs/03-refresh-tmux-plugins` to cleanly reinstall all plugins. The manual `prefix + I` approach is unreliable.
+TPM plugins are auto-installed by `00-install-dependencies`. When adding new plugins to `tmux.conf`, run `./runs/02-refresh-tmux-plugins` to cleanly reinstall all plugins. The manual `prefix + I` approach is unreliable.
 
 ### 3. Symlinks Break If Repo Moves
 If this repo is moved from `~/env-provision`, all symlinks break. User would need to re-run `./run` from the new location.
