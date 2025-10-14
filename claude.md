@@ -25,7 +25,6 @@ When possible, dependencies are installed via Homebrew (not manual git clones or
 Scripts in `runs/` are executed in alphabetical order:
 - `00-install-dependencies` - Install all tools/dependencies (run once on fresh Mac)
 - `01-symlink-configs` - Symlink all config files
-- `02-update-neovim` - Clone/update neovim config from GitHub
 - `03-refresh-tmux-plugins` - Clean and reinstall tmux plugins (fixes plugin detection issues)
 
 ## Directory Structure
@@ -46,7 +45,7 @@ env-provision/
 │   │   ├── keymap.json        # Vim-style keybindings
 │   │   └── tasks.json         # Custom tasks (fzf, nvim)
 │   ├── ghostty/config         # Terminal config (Gruvbox, CommitMono font)
-│   └── nvimmmm/init.lua       # Neovim config
+│   └── nvim/                  # Neovim config (tracked in this repo)
 │
 ├── .local/                     # User scripts and data
 │   ├── scripts/
@@ -60,7 +59,6 @@ env-provision/
 └── runs/                       # Provisioning scripts (executable)
     ├── 00-install-dependencies # Install all tools via Homebrew
     ├── 01-symlink-configs      # Symlink all configs to ~/
-    ├── 02-update-neovim        # Clone/update nvim config from GitHub
     └── 03-refresh-tmux-plugins # Clean and reinstall tmux plugins
 ```
 
@@ -94,21 +92,10 @@ Installs everything needed for fresh Mac:
 - Backs up existing files (moves to `.backup`)
 - Removes old symlinks
 - Creates new symlinks from this repo to `~/`
-- Symlinks: `.zshrc`, `.config/*`, `.local/*`
+- Symlinks: `.zshrc`, `.config/*` (git, tmux, nvim, ghostty, zed), `.local/*`
 - Includes `--dry` flag support for testing
 
-### `runs/02-update-neovim`
-Keeps neovim config in sync with GitHub repo (`git@github.com:nezudevv/nvim_basic.git`):
-- **First run:** Clones repo to `~/.config/nvim`
-- **Subsequent runs:** Does `git pull` to get latest changes
-- Supports `--dry` flag
-- User wants this to always run latest version without manual intervention
-
-**Usage:**
-```bash
-./run neovim                    # Run via main script with filter
-./runs/02-update-neovim         # Run directly
-```
+**Note:** Neovim config (`.config/nvim/`) is tracked directly in this repo, not as a separate git submodule.
 
 ### `runs/03-refresh-tmux-plugins`
 Fixes tmux plugin detection issues (TPM doesn't always detect new plugins properly):
