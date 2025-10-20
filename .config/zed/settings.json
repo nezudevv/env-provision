@@ -1,8 +1,6 @@
 {
+  "title_bar": {"show_branch_icon": true},
   "language_models": {
-    // "bedrock": {
-    //   "authentication_method": "sso"
-    // }
     "anthropic": {
       "api_url": "bedrock",
       "available_models": [
@@ -62,7 +60,7 @@
     "edit_prediction_provider": "zed"
   },
   "base_keymap": "VSCode",
-  "theme": "Nightfox - blurred",
+  "theme": "Nightfox - opaque",
   "ui_font_size": 17,
   "buffer_font_size": 18,
   // Finder model width
@@ -174,5 +172,17 @@
   // Move some unnecessary panels to the left
   "notification_panel": {
     "dock": "left"
-  }
+  },
+    "auto_install_extensions": {
+      "html": true,
+      "dockerfile": true,
+      "docker-compose": true,
+      "toml": true,
+      "git-firefly": true,
+      "sql": true,
+      "vue": true,
+      "terraform": true,
+      "angular": true,
+      "typescript": true
+    }
 }
