@@ -8,6 +8,7 @@ Complete dotfiles and provisioning scripts for macOS development environment.
 - tmux, fzf, zoxide, neovim, zed, git
 - Oh My Zsh, Powerlevel10k, zsh-syntax-highlighting
 - NVM (Node Version Manager)
+- Rust & Cargo
 - JetBrains Mono & Commit Mono Nerd Fonts
 
 **Configuration Files:**

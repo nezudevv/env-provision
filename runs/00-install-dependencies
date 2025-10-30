@@ -37,6 +37,7 @@ brew_packages=(
 	zed
 	zsh-syntax-highlighting
 	nvm
+	rust
 )
 
 for package in "${brew_packages[@]}"; do
@@ -49,6 +50,11 @@ for package in "${brew_packages[@]}"; do
 done
 
 success "Homebrew packages installed"
+
+# Upgrade already-installed packages (including rust)
+log "Upgrading already-installed packages..."
+brew upgrade 2>/dev/null || log "All packages up to date"
+success "Packages upgraded"
 
 # Install Powerlevel10k via Homebrew
 log "Installing Powerlevel10k..."
@@ -116,10 +122,21 @@ done
 
 success "Nerd Fonts checked"
 
+# Check Powerlevel10k configuration
+log "Checking Powerlevel10k configuration..."
+if [ -f "$HOME/.p10k.zsh" ]; then
+	success "Powerlevel10k configuration found"
+else
+	log "⚠️  Powerlevel10k configuration not found"
+	log "    You'll need to run: p10k configure"
+fi
+
 log ""
 log "✓ All dependencies installed!"
 log ""
 log "Next steps:"
 log "  1. Run: ./run"
 log "  2. Restart your terminal"
-log "  3. Configure Powerlevel10k: p10k configure"
+if [ ! -f "$HOME/.p10k.zsh" ]; then
+	log "  3. Configure Powerlevel10k: p10k configure"
+fi
