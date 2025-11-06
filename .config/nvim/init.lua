@@ -2,3 +2,4 @@
 require("nezudevv")
 
 vim.diagnostic.config({ virtual_text = true })
+vim.cmd([[colorscheme everforest]])

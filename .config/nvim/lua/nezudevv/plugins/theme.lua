@@ -12,20 +12,30 @@ return {
 	-- end,
 
 	-- themes
-	{
-		"sainnhe/gruvbox-material",
-		priority = 1000, -- load before other plugins
-		config = function()
-			vim.g.gruvbox_material_background = "hard"
-			vim.g.gruvbox_material_foreground = "material"
-			vim.g.gruvbox_material_enable_italic = 1
-			vim.g.gruvbox_material_disable_italic_comment = 0
-			vim.g.gruvbox_material_better_performance = 1
-
-			vim.o.background = "dark"
-			vim.cmd("colorscheme gruvbox-material")
-		end,
-	},
+	"neanias/everforest-nvim",
+	version = false,
+	lazy = false,
+	priority = 1000, -- make sure to load this before all the other start plugins
+	-- Optional; default configuration will be used if setup isn't called.
+	config = function()
+		require("everforest").setup({
+			-- Your config here
+		})
+	end,
+	-- {
+	-- 	"sainnhe/gruvbox-material",
+	-- 	priority = 1000, -- load before other plugins
+	-- 	config = function()
+	-- 		vim.g.gruvbox_material_background = "hard"
+	-- 		vim.g.gruvbox_material_foreground = "material"
+	-- 		vim.g.gruvbox_material_enable_italic = 1
+	-- 		vim.g.gruvbox_material_disable_italic_comment = 0
+	-- 		vim.g.gruvbox_material_better_performance = 1
+	--
+	-- 		vim.o.background = "dark"
+	-- 		vim.cmd("colorscheme gruvbox-material")
+	-- 	end,
+	-- },
 	-- {
 	-- 	"rebelot/kanagawa.nvim",
 	-- 	lazy = false,
