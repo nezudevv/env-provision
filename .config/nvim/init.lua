@@ -2,4 +2,6 @@
 require("nezudevv")
 
 vim.diagnostic.config({ virtual_text = true })
-vim.cmd([[colorscheme everforest]])
+vim.o.termguicolors = true
+vim.cmd("colorscheme kanagawa-dragon")
+vim.opt.linespace = 10

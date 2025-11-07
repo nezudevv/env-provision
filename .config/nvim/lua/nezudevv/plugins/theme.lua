@@ -12,25 +12,25 @@ return {
 	-- end,
 
 	-- themes
-	"neanias/everforest-nvim",
-	version = false,
-	lazy = false,
-	priority = 1000, -- make sure to load this before all the other start plugins
-	-- Optional; default configuration will be used if setup isn't called.
-	config = function()
-		require("everforest").setup({
-			disable_italic_comments = true,
-			background = "soft",
-			on_highlights = function(hl, palette)
-				-- Remove bold from all highlight groups
-				for group, attrs in pairs(hl) do
-					if attrs.bold then
-						attrs.bold = false
-					end
-				end
-			end,
-		})
-	end,
+	-- "neanias/everforest-nvim",
+	-- version = false,
+	-- lazy = false,
+	-- priority = 1000, -- make sure to load this before all the other start plugins
+	-- -- Optional; default configuration will be used if setup isn't called.
+	-- config = function()
+	-- 	require("everforest").setup({
+	-- 		disable_italic_comments = true,
+	-- 		background = "hard",
+	-- 		on_highlights = function(hl, palette)
+	-- 			-- Remove bold from all highlight groups
+	-- 			for group, attrs in pairs(hl) do
+	-- 				if attrs.bold then
+	-- 					attrs.bold = false
+	-- 				end
+	-- 			end
+	-- 		end,
+	-- 	})
+	-- end,
 	-- {
 	-- 	"sainnhe/gruvbox-material",
 	-- 	priority = 1000, -- load before other plugins
@@ -45,16 +45,41 @@ return {
 	-- 		vim.cmd("colorscheme gruvbox-material")
 	-- 	end,
 	-- },
-	-- {
-	-- 	"rebelot/kanagawa.nvim",
-	-- 	lazy = false,
-	-- 	priority = 1000,
-	-- 	opts = {},
-	-- 	config = function()
-	-- 		vim.cmd("colorscheme kanagawa-dragon")
-	-- 	end,
-	-- 	cache = true
-	-- },
+	{
+		"rebelot/kanagawa.nvim",
+		lazy = false,
+		priority = 1000,
+		config = function()
+			require("kanagawa").setup({
+				compile = false,
+				undercurl = true,
+				commentStyle = { italic = false },
+				functionStyle = { bold = false },
+				keywordStyle = { bold = false, italic = false },
+				statementStyle = { bold = false },
+				typeStyle = { bold = false },
+				transparent = false,
+				dimInactive = false,
+				terminalColors = true,
+				theme = "dragon",
+				background = {
+					dark = "dragon",
+					light = "lotus"
+				},
+				-- overrides = function(colors)
+				-- 	return {
+				-- 		-- Make keywords lighter/whiter instead of reddish
+				-- 		Keyword = { fg = colors.palette.fujiWhite, italic = true },
+				-- 		["@keyword"] = { link = "Keyword" },
+				-- 		["@keyword.javascript"] = { link = "Keyword" },
+				-- 		["@keyword.typescript"] = { link = "Keyword" },
+				-- 	}
+				-- end,
+			})
+			vim.cmd("colorscheme kanagawa-dragon")
+		end,
+		cache = true,
+	},
 	-- {
 	-- 	"dgox16/oldworld.nvim",
 	-- 	config = function()
