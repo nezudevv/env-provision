@@ -1,4 +1,6 @@
 {
+  "buffer_font_size": 15.0,
+  "buffer_line_height": "comfortable",
   "unnecessary_code_fade": 0.5,
   "title_bar": { "show_branch_icon": true },
   "language_models": {
@@ -64,7 +66,6 @@
   "base_keymap": "VSCode",
   "theme": "Kanagawa Dragon - No Italics",
   "ui_font_size": 17,
-  "buffer_font_size": 18,
   // Finder model width
   "file_finder": {},
   // NOTE: Change the font family to your preference

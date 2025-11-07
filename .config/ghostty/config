@@ -1,4 +1,3 @@
-# or nord-wave
-# theme = nord
-font-family = CommitMono Nerd Font Mono
-theme = gruvbox-material
+font-size = 18
+theme = Everblush
+adjust-cell-height = 

@@ -19,7 +19,16 @@ return {
 	-- Optional; default configuration will be used if setup isn't called.
 	config = function()
 		require("everforest").setup({
-			-- Your config here
+			disable_italic_comments = true,
+			background = "soft",
+			on_highlights = function(hl, palette)
+				-- Remove bold from all highlight groups
+				for group, attrs in pairs(hl) do
+					if attrs.bold then
+						attrs.bold = false
+					end
+				end
+			end,
 		})
 	end,
 	-- {
