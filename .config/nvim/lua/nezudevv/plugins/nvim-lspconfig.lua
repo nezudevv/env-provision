@@ -55,6 +55,9 @@ return {
 				-- Goto Declaration
 				map("gD", vim.lsp.buf.declaration, "[G]oto [D]eclaration")
 
+				-- Hover documentation
+				map("K", vim.lsp.buf.hover, "Hover Documentation")
+
 				-- Highlight references of the word under your cursor
 				local client = vim.lsp.get_client_by_id(event.data.client_id)
 				if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight) then
@@ -115,12 +118,9 @@ return {
 		})
 		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
-		-- Setup ts_ls with Vue TypeScript plugin (pointing to global npm installation)
-		require("lspconfig").ts_ls.setup({
-			on_attach = function(client, bufnr)
-				-- Trigger LspAttach event for keymaps
-				vim.api.nvim_exec_autocmds("User", { pattern = "LspAttach" })
-			end,
+		-- Setup ts_ls FIRST with Vue TypeScript plugin
+		local lspconfig = require("lspconfig")
+		lspconfig.ts_ls.setup({
 			capabilities = capabilities,
 			init_options = {
 				plugins = {
@@ -134,23 +134,22 @@ return {
 			filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
 		})
 
-		-- Setup volar with default config
-		require("lspconfig").volar.setup({
+		-- Setup volar AFTER ts_ls
+		lspconfig.volar.setup({
 			capabilities = capabilities,
 		})
 
-		-- Setup other servers via mason-lspconfig
+		-- Setup other servers via mason-lspconfig (excluding ts_ls and vue_ls)
 		require("mason-lspconfig").setup({
 			handlers = {
-				-- Default handler for most servers
 				function(server_name)
-					-- Skip ts_ls and vue_ls since we already set them up above
+					-- Skip ts_ls and vue_ls - already configured above
 					if server_name == "ts_ls" or server_name == "vue_ls" then
 						return
 					end
 					local server = servers[server_name] or {}
 					server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
-					require("lspconfig")[server_name].setup(server)
+					lspconfig[server_name].setup(server)
 				end,
 			},
 		})
