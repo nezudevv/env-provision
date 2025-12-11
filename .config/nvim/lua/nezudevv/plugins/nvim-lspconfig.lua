@@ -91,8 +91,9 @@ return {
 
 		-- Enable the following language servers
 		local servers = {
-			vue_ls = {}, -- Will be configured via custom handler
-			ts_ls = {}, -- Will be configured via custom handler
+			vue_ls = {}, -- Will be configured manually below
+			ts_ls = {}, -- Will be configured manually below
+			vtsls = { enabled = false }, -- Disable vtsls, we're using ts_ls
 			lua_ls = {
 				settings = {
 					Lua = {
@@ -110,7 +111,14 @@ return {
 		require("mason").setup()
 
 		-- You can add other tools here that you want Mason to install
-		local ensure_installed = vim.tbl_keys(servers or {})
+		-- Filter out disabled servers
+		local ensure_installed = {}
+		for server_name, server_opts in pairs(servers or {}) do
+			-- Only include servers that are not explicitly disabled
+			if type(server_opts) ~= "table" or server_opts.enabled ~= false then
+				table.insert(ensure_installed, server_name)
+			end
+		end
 		vim.list_extend(ensure_installed, {
 			"stylua", -- Used to format Lua code
 			"typescript-language-server", -- ts_ls for TypeScript/JavaScript
@@ -139,15 +147,20 @@ return {
 			capabilities = capabilities,
 		})
 
-		-- Setup other servers via mason-lspconfig (excluding ts_ls and vue_ls)
+		-- Setup other servers via mason-lspconfig (excluding ts_ls, vue_ls, and vtsls)
 		require("mason-lspconfig").setup({
+			automatic_installation = false, -- Don't auto-install LSP servers
 			handlers = {
 				function(server_name)
-					-- Skip ts_ls and vue_ls - already configured above
-					if server_name == "ts_ls" or server_name == "vue_ls" then
+					-- Skip servers we configured manually or disabled
+					if server_name == "ts_ls" or server_name == "vue_ls" or server_name == "vtsls" then
 						return
 					end
 					local server = servers[server_name] or {}
+					-- Check if server is explicitly disabled
+					if server.enabled == false then
+						return
+					end
 					server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, server.capabilities or {})
 					lspconfig[server_name].setup(server)
 				end,
