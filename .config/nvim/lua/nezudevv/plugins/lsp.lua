@@ -180,31 +180,9 @@ return {
 				-- rust_analyzer = {},
 				-- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
 				--
-				-- I use ts-tools instead for regular TS/JS, but need ts_ls for Vue
 				-- Some languages (like typescript) have entire language plugins that can be useful:
 				--    https://github.com/pmizio/typescript-tools.nvim
 				-- But for many setups, the LSP (`ts_ls`) will work just fine
-				ts_ls = {
-					init_options = {
-						plugins = {
-							{
-								name = "@vue/typescript-plugin",
-								location = "/opt/homebrew/lib/node_modules/@vue/typescript-plugin",
-								languages = { "vue" },
-							},
-						},
-					},
-					filetypes = { "vue" }, -- Only handle Vue files, let typescript-tools handle TS/JS
-				},
-
-				volar = {
-					filetypes = { "vue" },
-					init_options = {
-						typescript = {
-							tsdk = vim.fn.system("npm root -g"):gsub("\n", "") .. "/typescript/lib"
-						}
-					}
-				},
 
 				lua_ls = {
 					-- cmd = {...},
@@ -232,26 +210,15 @@ return {
 
 			-- You can add other tools here that you want Mason to install
 			-- for you, so that they are available from within Neovim.
-			-- Get server names but exclude volar since Mason package name is different
-			local ensure_installed = {}
-			for server_name, _ in pairs(servers or {}) do
-				if server_name ~= "volar" then
-					table.insert(ensure_installed, server_name)
-				end
-			end
+			local ensure_installed = vim.tbl_keys(servers or {})
 			vim.list_extend(ensure_installed, {
 				"stylua", -- Used to format Lua code
-				"vue-language-server", -- Vue LSP (volar)
 			})
 			require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 			require("mason-lspconfig").setup({
 				handlers = {
 					function(server_name)
-						-- Skip volar for now, we'll set it up manually after ts_ls
-						if server_name == "volar" then
-							return
-						end
 						local server = servers[server_name] or {}
 						-- This handles overriding only values explicitly passed
 						-- by the server configuration above. Useful when disabling
@@ -261,26 +228,6 @@ return {
 					end,
 				},
 			})
-
-			-- Setup ts_ls first, then volar, to ensure ts_ls is available for volar to find
-			-- Using new vim.lsp.config API for Neovim 0.11+
-			if servers.ts_ls then
-				local ts_server = vim.tbl_deep_extend("force", {}, servers.ts_ls or {})
-				ts_server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, ts_server.capabilities or {})
-				ts_server.cmd = { 'typescript-language-server', '--stdio' }
-				ts_server.root_markers = { 'package.json', 'tsconfig.json', 'jsconfig.json' }
-				vim.lsp.config.ts_ls = ts_server
-			end
-
-			-- Now setup volar after ts_ls is configured
-			if servers.volar then
-				local volar_server = vim.tbl_deep_extend("force", {}, servers.volar or {})
-				volar_server.capabilities = vim.tbl_deep_extend("force", {}, capabilities, volar_server.capabilities or {})
-				volar_server.cmd = { 'vue-language-server', '--stdio' }
-				volar_server.root_markers = { 'package.json' }
-				vim.lsp.config.volar = volar_server
-			end
-
 		end,
 	},
 }

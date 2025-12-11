@@ -6,7 +6,6 @@ return { -- Highlight, edit, and navigate code
 	opts = {
 		ensure_installed = {
 			"bash",
-			"c",
 			"diff",
 			"html",
 			"lua",
@@ -14,6 +13,8 @@ return { -- Highlight, edit, and navigate code
 			"query",
 			"vim",
 			"vimdoc",
+			"vue",
+			"css"
 		},
 		-- Autoinstall languages that are not installed
 		auto_install = true,
