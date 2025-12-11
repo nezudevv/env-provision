@@ -91,8 +91,8 @@ return {
 
 		-- Enable the following language servers
 		local servers = {
-			vue_ls = {}, -- Will be configured manually below
-			ts_ls = {}, -- Will be configured manually below
+			-- Note: ts_ls and volar are configured manually below using vim.lsp.config()
+			-- Don't add vue_ls here - it's the same as volar and causes duplicates
 			vtsls = { enabled = false }, -- Disable vtsls, we're using ts_ls
 			lua_ls = {
 				settings = {
@@ -126,33 +126,16 @@ return {
 		})
 		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
-		-- Setup ts_ls FIRST with Vue TypeScript plugin
+		-- Setup ts_ls and volar manually (must be done AFTER mason-lspconfig to override defaults)
 		local lspconfig = require("lspconfig")
-		lspconfig.ts_ls.setup({
-			capabilities = capabilities,
-			init_options = {
-				plugins = {
-					{
-						name = "@vue/typescript-plugin",
-						location = vim.fn.trim(vim.fn.system("npm root -g")) .. "/@vue/language-server",
-						languages = { "vue" },
-					},
-				},
-			},
-			filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
-		})
 
-		-- Setup volar AFTER ts_ls
-		lspconfig.volar.setup({
-			capabilities = capabilities,
-		})
-
-		-- Setup other servers via mason-lspconfig (excluding ts_ls, vue_ls, and vtsls)
+		-- Setup other servers via mason-lspconfig (excluding manually configured servers)
 		require("mason-lspconfig").setup({
 			automatic_installation = false, -- Don't auto-install LSP servers
 			handlers = {
 				function(server_name)
-					-- Skip servers we configured manually or disabled
+					-- Skip servers we configured manually with vim.lsp.config() or disabled
+					-- Note: vue_ls and volar are the same server, we handle it manually as "volar"
 					if server_name == "ts_ls" or server_name == "vue_ls" or server_name == "vtsls" then
 						return
 					end
@@ -166,5 +149,35 @@ return {
 				end,
 			},
 		})
+
+		-- NOW setup ts_ls and vue_ls AFTER mason-lspconfig
+		-- Use vim.lsp.config API (Neovim 0.11+) which properly overrides defaults
+		vim.lsp.config("ts_ls", {
+			cmd = { "typescript-language-server", "--stdio" },
+			capabilities = capabilities,
+			filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+			root_markers = { "package.json", "tsconfig.json", "jsconfig.json", ".git" },
+			init_options = {
+				plugins = {
+					{
+						name = "@vue/typescript-plugin",
+						location = vim.fn.trim(vim.fn.system("npm root -g")) .. "/@vue/language-server",
+						languages = { "vue" },
+					},
+				},
+			},
+		})
+
+		-- Setup vue_ls (formerly volar) AFTER ts_ls
+		vim.lsp.config("vue_ls", {
+			cmd = { "vue-language-server", "--stdio" },
+			capabilities = capabilities,
+			filetypes = { "vue" },
+			root_markers = { "package.json" },
+		})
+
+		-- Enable both servers
+		vim.lsp.enable("ts_ls")
+		vim.lsp.enable("vue_ls")
 	end,
 }
