@@ -25,7 +25,7 @@ return {
 				end
 
 				-- Jump to the definition of the word under your cursor.
-				map("gd", require("telescope.builtin").lsp_definitions, "[G]oto [D]efinition")
+				map("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 
 				-- Find references for the word under your cursor.
 				map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
