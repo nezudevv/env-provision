@@ -40,11 +40,7 @@ return {
 				map("gs", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
 
 				-- Fuzzy find all the symbols in your current workspace.
-				map(
-					"<leader>ws",
-					require("telescope.builtin").lsp_dynamic_workspace_symbols,
-					"[W]orkspace [S]ymbols"
-				)
+				map("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
 
 				-- Rename the variable under your cursor.
 				map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
@@ -57,6 +53,11 @@ return {
 
 				-- Hover documentation
 				map("K", vim.lsp.buf.hover, "Hover Documentation")
+
+				-- Toggle inlay hints
+				map("<leader>rk", function()
+					vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }), { bufnr = event.buf })
+				end, "Toggle [r]Inlay [k]Hints")
 
 				-- Highlight references of the word under your cursor
 				local client = vim.lsp.get_client_by_id(event.data.client_id)
@@ -82,6 +83,9 @@ return {
 						end,
 					})
 				end
+
+				-- Enable inlay hints for this buffer
+				vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
 			end,
 		})
 
@@ -165,6 +169,30 @@ return {
 						name = "@vue/typescript-plugin",
 						location = vim.fn.trim(vim.fn.system("npm root -g")) .. "/@vue/language-server",
 						languages = { "vue" },
+					},
+				},
+			},
+			settings = {
+				typescript = {
+					inlayHints = {
+						includeInlayParameterNameHints = "all",
+						includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+						includeInlayFunctionParameterTypeHints = true,
+						includeInlayVariableTypeHints = true,
+						includeInlayPropertyDeclarationTypeHints = true,
+						includeInlayFunctionLikeReturnTypeHints = true,
+						includeInlayEnumMemberValueHints = true,
+					},
+				},
+				javascript = {
+					inlayHints = {
+						includeInlayParameterNameHints = "all",
+						includeInlayParameterNameHintsWhenArgumentMatchesName = false,
+						includeInlayFunctionParameterTypeHints = true,
+						includeInlayVariableTypeHints = true,
+						includeInlayPropertyDeclarationTypeHints = true,
+						includeInlayFunctionLikeReturnTypeHints = true,
+						includeInlayEnumMemberValueHints = true,
 					},
 				},
 			},
