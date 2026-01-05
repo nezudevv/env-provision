@@ -1,2 +1,4 @@
 shared-envs/
 .config/tmux/plugins
+.DS_Store
+.config/zed/prompts/prompts-library-db.0.mdb/

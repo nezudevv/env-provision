@@ -18,8 +18,9 @@ Personal dotfiles and provisioning system for macOS development environment. Eve
 When possible, dependencies are installed via Homebrew (not manual git clones or curl installs):
 - Powerlevel10k: `brew install romkatv/powerlevel10k/powerlevel10k`
 - zsh-syntax-highlighting: `brew install zsh-syntax-highlighting`
+- Node.js (includes npm): `brew install node`
 - NVM: `brew install nvm`
-- Tools sourced from Homebrew paths in .zshrc (see line 155, 200, 206)
+- Tools sourced from Homebrew paths in .zshrc (see lines 155, 199-201, 206)
 
 ### 3. Numbered Execution Order
 Scripts in `runs/` are executed in alphabetical order:
@@ -34,18 +35,20 @@ env-provision/
 ├── claude.md                   # This file - context for Claude Code
 ├── README.md                   # User-facing setup guide
 ├── run                         # Main script - executes all numbered scripts
-├── .zshrc                      # Complete shell config (244 lines)
+├── .zshrc                      # Complete shell config (252 lines)
 ├── .gitignore                  # Ignores shared-envs/
 │
 ├── .config/                    # App configurations (all symlinked)
-│   ├── git/config             # Git config with aliases (co, s, fp)
-│   ├── tmux/tmux.conf         # Tmux with Gruvbox, Ctrl-Space prefix
-│   ├── zed/                   # Zed editor (vim mode, Catppuccin theme)
-│   │   ├── settings.json      # Editor settings, LSP config
+│   ├── git/
+│   │   ├── config             # Git config with aliases (co, s, fp)
+│   │   └── ignore             # Global gitignore (Claude settings, etc)
+│   ├── tmux/tmux.conf         # Tmux with Kanagawa theme, Ctrl-Space prefix
+│   ├── zed/                   # Zed editor (vim mode, Kanagawa theme)
+│   │   ├── settings.json      # Editor settings, LSP config, Bedrock integration
 │   │   ├── keymap.json        # Vim-style keybindings
 │   │   └── tasks.json         # Custom tasks (fzf, nvim)
-│   ├── ghostty/config         # Terminal config (Gruvbox, CommitMono font)
-│   └── nvim/                  # Neovim config (tracked in this repo)
+│   ├── ghostty/config         # Terminal config (Kanagawa Dragon, JetBrains Mono)
+│   └── nvim/                  # Neovim config with 28 plugins (tracked in this repo)
 │
 ├── .local/                     # User scripts and data
 │   ├── scripts/
@@ -71,15 +74,16 @@ env-provision/
 - **Lines 54-76:** `killport()` function - kills process on port
 - **Line 150:** Oh My Zsh plugins (only `git` - syntax highlighting loaded separately)
 - **Line 155:** Sources zsh-syntax-highlighting from Homebrew
-- **Lines 200-201:** NVM from Homebrew (NOT curl install)
+- **Lines 199-201:** NVM from Homebrew (NOT curl install)
 - **Line 206:** Powerlevel10k from Homebrew
-- **Lines 210-223:** `fw()` function - work-specific CLI wrapper
-- **Line 208:** Zoxide initialization
+- **Line 209:** Sources .p10k.zsh configuration if it exists
+- **Line 213:** Zoxide initialization
+- **Lines 215-237:** `fw()` function - work-specific CLI wrapper
 
 ### `runs/00-install-dependencies`
 Installs everything needed for fresh Mac:
 1. Checks Homebrew exists (exits if not)
-2. Installs brew packages: tmux, fzf, zoxide, gnu-sed, neovim, git, zed, zsh-syntax-highlighting, nvm, rust
+2. Installs brew packages: tmux, fzf, zoxide, gnu-sed, neovim, git, zed, zsh-syntax-highlighting, node (includes npm), nvm, rust
 3. Upgrades already-installed packages (ensures rust and other tools are up-to-date)
 4. Installs Powerlevel10k via brew tap
 5. Installs Oh My Zsh via official script
@@ -117,7 +121,7 @@ Fixes tmux plugin detection issues (TPM doesn't always detect new plugins proper
 ### `.local/scripts/tmux-sessionizer`
 Fuzzy finder for projects, creates/switches tmux sessions:
 - **Lines 4-7:** Configurable search paths (currently `~/Developer`, `~/env-provision`)
-- **Line 10:** MAX_DEPTH=3 (searches 3 levels deep)
+- **Line 10:** MAX_DEPTH=4 (searches 4 levels deep)
 - **Lines 27-41:** Excludes auto-generated dirs: `.git`, `node_modules`, `dist`, `build`, `extensions`, etc.
 - Uses fzf for selection
 - Creates tmux session with sanitized name
@@ -127,13 +131,17 @@ Fuzzy finder for projects, creates/switches tmux sessions:
 - **Line 9:** Prefix rebound to `Ctrl-Space`
 - **Lines 16-19:** Vim-style pane navigation (h/j/k/l)
 - **Line 23:** `Ctrl-Space + f` opens tmux-sessionizer
-- **Lines 45-50:** TPM plugins: tmux-sensible, tmux-gruvbox
-- **Line 67:** TPM initialization (must be last line)
+- **Lines 45-51:** TPM plugins: tmux-sensible, tmux-kanagawa
+- **Line 69:** TPM initialization (must be last line)
 
 ### `.config/zed/`
-- **settings.json:** Vim mode enabled, JetBrainsMono Nerd Font, Catppuccin theme, LSP configs
-- **keymap.json:** Vim-style keybindings, `space` as leader key
+- **settings.json:** Vim mode enabled, JetBrainsMono Nerd Font, Kanagawa Dragon theme, LSP configs, Bedrock (Claude Sonnet 4.5) integration
+- **keymap.json:** Vim-style keybindings, `space` as leader key, VSCode base keymap
 - **tasks.json:** Custom tasks for fzf and nvim integration
+
+### `.config/git/`
+- **config:** Git configuration with custom aliases and settings
+- **ignore:** Global gitignore file that excludes Claude Code settings (`**/.claude/settings.local.json`) from all repositories
 
 ## Important Gotchas
 
@@ -164,7 +172,10 @@ Hardcoded to `~/Developer` and `~/env-provision`. If user has projects elsewhere
 Rust and Cargo are installed via `brew install rust`, not rustup. This aligns with the "Homebrew for Everything" architecture decision. The `.zshrc` already includes `~/.cargo/bin` in the PATH. Rust is auto-upgraded during provisioning via `brew upgrade`.
 
 ### 8. Powerlevel10k Configuration
-The `.p10k.zsh` file is NOT tracked in this repo (it's generated by running `p10k configure`). The installation script checks if this file exists and logs a warning if it's missing. The `.zshrc` will source it automatically if present (line 208).
+The `.p10k.zsh` file is NOT tracked in this repo (it's generated by running `p10k configure`). The installation script checks if this file exists and logs a warning if it's missing. The `.zshrc` will source it automatically if present (line 209).
+
+### 9. Node.js and npm via Homebrew
+Node.js and npm are installed globally via `brew install node`, not via nvm. This provides a stable system-wide installation. nvm is also installed for managing multiple Node versions when needed, but the default Node installation comes from Homebrew.
 
 ## Making Changes
 
@@ -211,13 +222,14 @@ User has custom git aliases that override Oh My Zsh defaults:
 ### Tmux Workflow
 - `Ctrl-Space + f` to fuzzy find and switch projects
 - Vim-style pane navigation
-- Gruvbox theme throughout (tmux, zed, ghostty)
+- Kanagawa theme throughout (tmux, zed, ghostty)
 
 ### Editor Preferences
-- Vim mode in Zed
+- Vim mode in Zed (with VSCode base keymap)
 - JetBrainsMono Nerd Font everywhere
-- Catppuccin/Gruvbox themes
+- Kanagawa Dragon theme across all editors and terminal
 - LSP enabled for TypeScript and Python
+- Bedrock integration for Claude Sonnet 4.5 in Zed
 
 ## Fresh Mac Setup (Quick Reference)
 1. Install Homebrew

@@ -246,3 +246,6 @@ export PATH="/opt/homebrew/opt/postgresql@16/bin:$PATH"
   export AWS_REGION=us-east-1
 export AWS_PROFILE=dev
 export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+
+
+[[ "$TERM_PROGRAM" == "kiro" ]] && . "$(kiro --locate-shell-integration-path zsh)"
