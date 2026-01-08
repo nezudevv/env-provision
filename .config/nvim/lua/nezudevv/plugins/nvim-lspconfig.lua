@@ -85,7 +85,7 @@ return {
 				end
 
 				-- Enable inlay hints for this buffer
-				vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+				vim.lsp.inlay_hint.enable(false, { bufnr = event.buf })
 			end,
 		})
 

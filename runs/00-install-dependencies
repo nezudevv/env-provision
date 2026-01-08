@@ -102,6 +102,24 @@ else
 	log "TPM not found, skipping plugin installation"
 fi
 
+# Install global npm packages
+log "Installing global npm packages..."
+npm_packages=(
+	"@vue/language-server"  # Required for Vue3 TypeScript support in Neovim
+)
+
+for package in "${npm_packages[@]}"; do
+	if npm list -g "$package" &>/dev/null; then
+		log "$package already installed"
+	else
+		log "Installing $package..."
+		npm install -g "$package"
+		success "$package installed"
+	fi
+done
+
+success "Global npm packages installed"
+
 # Install Nerd Fonts
 log "Installing Nerd Fonts..."
 brew tap homebrew/cask-fonts 2>/dev/null || true
