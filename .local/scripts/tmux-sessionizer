@@ -21,36 +21,50 @@ if [ ${#find_paths[@]} -eq 0 ]; then
 	exit 1
 fi
 
-# Exclude auto-generated directories
-selected=$(find "${find_paths[@]}" -mindepth 1 -maxdepth "$MAX_DEPTH" \
-	-type d \( \
-		-name ".git" -o \
-		-name "node_modules" -o \
-		-name ".vscode" -o \
-		-name ".idea" -o \
-		-name "dist" -o \
-		-name "build" -o \
-		-name "out" -o \
-		-name ".next" -o \
-		-name ".nuxt" -o \
-		-name "coverage" -o \
-		-name ".nyc_output" -o \
-		-name ".turbo" -o \
-		-name "target" -o \
-		-name "vendor" -o \
-		-name "extensions" \
-	\) -prune -o -type d -print 2>/dev/null | fzf)
+# Exclude auto-generated directories and add special options (like jira) at the top
+selected=$(
+	{
+		echo "jira"
+		find "${find_paths[@]}" -mindepth 1 -maxdepth "$MAX_DEPTH" \
+			-type d \( \
+				-name ".git" -o \
+				-name "node_modules" -o \
+				-name ".vscode" -o \
+				-name ".idea" -o \
+				-name "dist" -o \
+				-name "build" -o \
+				-name "out" -o \
+				-name ".next" -o \
+				-name ".nuxt" -o \
+				-name "coverage" -o \
+				-name ".nyc_output" -o \
+				-name ".turbo" -o \
+				-name "target" -o \
+				-name "vendor" -o \
+				-name "extensions" \
+			\) -prune -o -type d -print 2>/dev/null
+	} | fzf
+)
 
 if [[ -z "$selected" ]]; then
 	exit 0
 fi
 
-selected_name=$(basename $selected | tr ":,. " "____")
+# Handle special sessions (like jira)
+if [[ "$selected" == "jira" ]]; then
+	selected_name="jira"
+	selected_dir="$HOME"
+	startup_command="nvim -c 'Jira FW'"
+else
+	selected_name=$(basename $selected | tr ":,. " "____")
+	selected_dir="$selected"
+	startup_command="ready-tmux"
+fi
 
 switch_to() {
 	if [[ -z "$TMUX" ]]; then
 		tmux attach-session -t $selected_name
-	else 
+	else
 		tmux switch-client -t $selected_name
 	fi
 }
@@ -59,6 +73,6 @@ if tmux has-session -t=$selected_name 2> /dev/null; then
 	exit 0
 fi
 
-tmux new-session -ds $selected_name -c $selected
+tmux new-session -ds $selected_name -c $selected_dir
 switch_to
-tmux send-keys -t $selected_name "ready-tmux" ^M
+tmux send-keys -t $selected_name "$startup_command" C-m

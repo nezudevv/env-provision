@@ -24,7 +24,7 @@ return {
 			template = "daily-template.md",
 		},
 		templates = {
-			subdir = "templates", -- The folder where your templates live
+			subdir = "template", -- The folder where your templates live
 			date_format = "%Y-%m-%d", -- Format for {{date}} variable
 			time_format = "%H:%M", -- Format for {{time}} variable
 

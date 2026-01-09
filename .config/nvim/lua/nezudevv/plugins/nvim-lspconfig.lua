@@ -28,19 +28,30 @@ return {
 				map("gd", vim.lsp.buf.definition, "[G]oto [D]efinition")
 
 				-- Find references for the word under your cursor.
-				map("gr", require("telescope.builtin").lsp_references, "[G]oto [R]eferences")
+				map("gr", function()
+					Snacks.picker.lsp_references()
+				end, "[G]oto [R]eferences")
 
 				-- Jump to the implementation of the word under your cursor.
-				map("gI", require("telescope.builtin").lsp_implementations, "[G]oto [I]mplementation")
+				map("gI", function()
+					Snacks.picker.lsp_implementations()
+				end, "[G]oto [I]mplementation")
 
 				-- Jump to the type of the word under your cursor.
-				map("gt", require("telescope.builtin").lsp_type_definitions, "[G]oto Type [D]efinition")
+				map("gt", function()
+					Snacks.picker.lsp_type_definitions()
+				end, "[G]oto Type [D]efinition")
 
 				-- Fuzzy find all the symbols in your current document.
-				map("gs", require("telescope.builtin").lsp_document_symbols, "[D]ocument [S]ymbols")
+				-- Note: Snacks uses 'lsp_symbols' for document symbols
+				map("gs", function()
+					Snacks.picker.lsp_symbols()
+				end, "[D]ocument [S]ymbols")
 
 				-- Fuzzy find all the symbols in your current workspace.
-				map("<leader>ws", require("telescope.builtin").lsp_dynamic_workspace_symbols, "[W]orkspace [S]ymbols")
+				map("<leader>ws", function()
+					Snacks.picker.lsp_workspace_symbols()
+				end, "[W]orkspace [S]ymbols")
 
 				-- Rename the variable under your cursor.
 				map("<leader>rn", vim.lsp.buf.rename, "[R]e[n]ame")
@@ -56,7 +67,10 @@ return {
 
 				-- Toggle inlay hints
 				map("<leader>rk", function()
-					vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }), { bufnr = event.buf })
+					vim.lsp.inlay_hint.enable(
+						not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }),
+						{ bufnr = event.buf }
+					)
 				end, "Toggle [r]Inlay [k]Hints")
 
 				-- Highlight references of the word under your cursor
