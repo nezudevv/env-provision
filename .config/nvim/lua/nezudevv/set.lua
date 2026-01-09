@@ -12,6 +12,7 @@ vim.o.softtabstop = 2
 vim.o.tabstop = 2
 
 -- opt
+vim.opt.conceallevel = 2
 vim.opt.breakindent = true -- Enable break indent
 vim.opt.cursorline = true -- Show which line your cursor is on
 vim.opt.ignorecase = true -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term

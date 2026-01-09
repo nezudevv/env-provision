@@ -12,14 +12,29 @@ return {
 	--   "BufNewFile path/to/my-vault/*.md",
 	-- },
 
-
 	dependencies = {
 		-- Required.
 		"nvim-lua/plenary.nvim",
-
 	},
 
 	opts = {
+		daily_notes = {
+			folder = "Daily",
+			date_format = "%Y-%m-%d",
+			template = "daily-template.md",
+		},
+		templates = {
+			subdir = "templates", -- The folder where your templates live
+			date_format = "%Y-%m-%d", -- Format for {{date}} variable
+			time_format = "%H:%M", -- Format for {{time}} variable
+
+			-- (Optional) Add custom substitutions
+			substitutions = {
+				weekday = function()
+					return os.date("%A") -- Returns "Thursday", etc.
+				end,
+			},
+		},
 		workspaces = {
 			{
 				name = "default",
