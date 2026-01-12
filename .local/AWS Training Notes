@@ -222,6 +222,7 @@ They always have the same IP range and same '1 subnet per AZ' architecture.
     - So the Logic Resource essential defines what Physical Resource will be provisioned/created
     - It is CF's job to keep these both in sync. This allows us to update the Logic Resource and when deployed it will update the same Physical Resource
 - automates infrastructure
+- When you upload a template directly to CF, it will save it to an S3 Bucket that it creates automatically, which is why when you're using AWS you may notice lots of Buckets with the prefix CF that get created in the Region automatically
 
 
 
