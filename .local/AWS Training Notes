@@ -147,6 +147,7 @@ They always have the same IP range and same '1 subnet per AZ' architecture.
       - 22: SSH protocol, used for linux instances. You login/authenticate to that Instance using an SSH Key Pair(has a private part and public part)
 
 **Simple Storage Service(S3)**
+- Since s3 bucket namespaces are global, that means you only select the region upon creating the bucket, not swapping regions using the main select(is a point of confusion)
 - Almost all other AWS Services have some sort of interaction with S3
 - Global Storage Platform - regional based/resilient. Stored in a specific Region at rest. Will never leave that region unless you explicitely configure it to.
   - Is Regionally Resilient meaning the data is replicated across AZs in that region. This let's S3 tolerate the failure of an AZ and it also has some capability to replicate data between regions.
