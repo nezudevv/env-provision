@@ -241,7 +241,22 @@ They always have the same IP range and same '1 subnet per AZ' architecture.
             - EC2Instance
             - AvailabilityZone <- gets the AZ from the newly created EC2Instance
     ```
-
+- Interesting bit, creating the Security Group Logical Resource. Allows 2 different types of traffic in to whatever this security group is attached to: SSH via port 22, HTTP via port 80
+  ```yaml
+      InstanceSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Enable SSH access via port 22 and 80
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: '22'
+          ToPort: '22'
+          CidrIp: !Ref SSHandWebLocation
+        - IpProtocol: tcp
+          FromPort: '80'
+          ToPort: '80'
+          CidrIp: !Ref SSHandWebLocation
+  ```
 
 
 
