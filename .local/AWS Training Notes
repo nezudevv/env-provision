@@ -192,6 +192,7 @@ They always have the same IP range and same '1 subnet per AZ' architecture.
     - You can sometimes also shrink your Instance by offloading data to S3
   - Should be the default for any Input to AWS Services or Output from AWS Services
     - Most services which consume data and/or output data can have S3 as an option to take data from or put data to when it's finished
+- If you are using S3 for hosting a web page then you need to make sure that the name of the bucket is the same as the dns name for that web page
 
 
 
