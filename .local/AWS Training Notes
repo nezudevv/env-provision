@@ -230,6 +230,17 @@ They always have the same IP range and same '1 subnet per AZ' architecture.
       ```
 - automates infrastructure
 - When you upload a template directly to CF, it will save it to an S3 Bucket that it creates automatically, which is why when you're using AWS you may notice lots of Buckets with the prefix CF that get created in the Region automatically
+- CF functions
+  -  `!Ref` this is going to reference another part of the cloudformation template: `!Ref EC2Instance` will reference the EC2 Logical Resource that we defined earlier
+  -  `!GetAtt` a more capable version of `!Ref`. You still refere to another thing defined in the template but you can pick from different data that thing generates:
+    ```yaml
+      Outputs:
+        AZ:
+          Description: Availability Zone of the newly created EC2 instance
+          Value: !GetAtt
+            - EC2Instance
+            - AvailabilityZone <- gets the AZ from the newly created EC2Instance
+    ```
 
 
 
