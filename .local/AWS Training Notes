@@ -243,19 +243,32 @@ They always have the same IP range and same '1 subnet per AZ' architecture.
     ```
 - Interesting bit, creating the Security Group Logical Resource. Allows 2 different types of traffic in to whatever this security group is attached to: SSH via port 22, HTTP via port 80
   ```yaml
+    Resources:
       InstanceSecurityGroup:
-    Type: 'AWS::EC2::SecurityGroup'
-    Properties:
-      GroupDescription: Enable SSH access via port 22 and 80
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: '22'
-          ToPort: '22'
-          CidrIp: !Ref SSHandWebLocation
-        - IpProtocol: tcp
-          FromPort: '80'
-          ToPort: '80'
-          CidrIp: !Ref SSHandWebLocation
+        Type: 'AWS::EC2::SecurityGroup'
+        Properties:
+          GroupDescription: Enable SSH access via port 22 and 80
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: '22'
+              ToPort: '22'
+              CidrIp: !Ref SSHandWebLocation
+            - IpProtocol: tcp
+              FromPort: '80'
+              ToPort: '80'
+              CidrIp: !Ref SSHandWebLocation
+  ```
+Example of setting the instance profile which gives us the permission to use the SessionManager AWS service
+  ```yaml
+    Resources:
+      EC2Instance:
+        Type: AWS::EC2::Instance
+        Properties:
+          InstanceType: "t2.nano"
+          ImageId: !Ref LatestAmiId
+          IamInstanceProfile: !Ref SessionManagerInstanceProfile
+          SecurityGroups:
+            - !Ref InstanceSecurityGroup
   ```
 
 
