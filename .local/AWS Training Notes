@@ -145,3 +145,59 @@ They always have the same IP range and same '1 subnet per AZ' architecture.
     - Important ports to remember
       - 3389: the remote desktop protocol, used for windows instances
       - 22: SSH protocol, used for linux instances. You login/authenticate to that Instance using an SSH Key Pair(has a private part and public part)
+
+**Simple Storage Service(S3)**
+- Almost all other AWS Services have some sort of interaction with S3
+- Global Storage Platform - regional based/resilient. Stored in a specific Region at rest. Will never leave that region unless you explicitely configure it to.
+  - Is Regionally Resilient meaning the data is replicated across AZs in that region. This let's S3 tolerate the failure of an AZ and it also has some capability to replicate data between regions.
+  - The UI can be confusing because it seemingly doesn't let you select a Region, instead you select the Region when you create things inside S3.
+- Public service(can be accessed anywhere there is an internet connection) that runs on the AWS Public Zone, unlimited data & multi-user(millions of users could be accessing the same content)
+- Perfect for storing large amounts of data. Movies, audio, photos, text, large data sets
+- Is Economical & accessed via UI/CLI/API/HTTP
+- Should be the default starting point unless your requirement isn't delivered by S3
+- Has 2 main things that it delivers
+  - Objects
+    - Is the data that S3 stores
+    - Can be thought of like files
+      - Made up of: 
+        - Key: Identifies the Object in the Bucket
+        - Value: Data/Contents
+      - Important: How large the Object is can range from Zero bytes up to 5TB
+  - Buckets
+    - Containers for Objects
+    - Created in a specific AWS Region
+    - Data inside the Bucket has a primary home Region and never leaves that Region unless you as an architect configures the data to leave that Region.
+      - This means that S3 has stable and controlled data sovereignty and means that the blast radius is that Region
+    - Important: Name of the bucket has to be globally unique
+    - Can hold unlimited number of objects
+    - Important: As an object storage system an S3 Bucket has no complex structure, it is flat. No nesting, though the ui does show it nested for easier use.
+- Also has some other things like: Version ID, Metadata, Access Control, Subresources
+- Important: 
+  - Bucket names are globally unique
+  - Bucket names must be 3 - 36 character, all lower case, no underscores
+  - Bucket names must start with a lowercase letter or a number
+  - Bucket names cannot be IP formatted e.g. 1.1.1.1
+  - Some limits on the number of buckets per account: 100 soft limit, 1000 hard per account
+  - You can have an unlimited number of Objects per bucket, 0 bytes to 5TB per Object
+  - Object structure is: Key = Name, Value = Data
+- Patterns and Anti-Patterns
+  - S3 is an object store - not file or block
+    - if there is a need to access the entire object(e.g. audio file, etc.) then you want an Object store.
+    - it's not block storage so, you cannot mount it as a mount point or a volume on linux or windows
+      - block storage is basically virtual hard disks, generally limited to 1 thing accessing it at a time.
+  - Great for large scale data storage, distribution or upload
+  - Great for offloading things
+    - If you have a blog with lots of posts/images/etc, you could move it to an S3 Bucket for cheap
+    - You can sometimes also shrink your Instance by offloading data to S3
+  - Should be the default for any Input to AWS Services or Output from AWS Services
+    - Most services which consume data and/or output data can have S3 as an option to take data from or put data to when it's finished
+
+
+
+
+
+Important reminder, by default even for Public Services, there is no access to it in AWS initialy except for the Account Root User
+
+
+
+
