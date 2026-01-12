@@ -94,13 +94,54 @@ IAM(Identity and Access Management)
   - Auto provided with an Internet Gateway(IGW), Security Group(SG) and NACL
   - By default, anything placed in the default VPC subnets is assigned a public IPv4 address
     - Public in this case just means it's in the AWS public zone. Default VPCs comes preconfigured this way
-  - 
-  - 
-  
-
 A default VPC is created once per region when an AWS account is first created.
 There can only be one default VPC per region, and they can be deleted and recreated from the console UI.
 They always have the same IP range and same '1 subnet per AZ' architecture.
 - is the service we use to create private networks inside aws that other private services will run from. VPCs is also the service we will use connect aws private networks to on premises networks when creating a hybrid environment. It's also the service we use to connect to other cloud platforms when creating a multi cloud deployment.
 - There tends to be a lot of vpc related questions on the exam.
 
+**Elastic Compute Cloud(EC2)**
+- Should be the default starting point for any compute requirement in AWS
+- Important facts & features it provides:
+  - IAAS(Infrastructure As A Service) - unit of consumption is the instance
+  - Provides access to virtual machines known as EC2 Instances
+  - An Instance is just an operating system configured in a certain way with a certain set of allocated resources
+  - Is a private AWS service, which means that by default it runs in the private AWS Zone
+    - Specifically, an EC2 Instance is configured to launch to a single VPC Subnet, which we set when we launch the Instance. When we launch the Instance you also have to configure any public access, should you want that. If you DO want to allow public access for an EC2 Instance then the VPC that it's running within needs to support that public access. Remember, that with the default VPC this is configured for us, but if we use a custom VPC then we need to handle that configuration.
+  - Is AZ Resilient - Instance fails if AZ fails
+    - This happens because an Instance is launched into a specific subnet and that subnet in a sepcific AZ
+  - When you launch an Instance, you can choose various sizes and capabilities for that Instance which influence the resources that the Instance gets as well as any extra capabilities such as GPUs, more advanced storage or networking, or special purpose processes. Some of these can be changed afterwards as well.
+  - On demand billing - either on the second or the hour depending on the software that is launched with the Instance. Only pay for what you consume.
+    - Multiple components to an instance charge: running the Instance(amount of CPU & Memory that it consumes), storage that it uses, extras for any commercial software that the Instance is launched with.
+  - Can use a number of different types of storage
+    - 2 popular types: Local on-host storage & Elastic Block Store(EBS)
+  - Instance Lifecycle
+    - Has an attribute called a State
+      - The State of the Instance provides an indication into it's condition
+        - Running, Stopped, Terminated
+          - In between states: Stopping, Shutting Down, Pending
+          - Can go between Running and Stopped many times but it can only be Terminated once, irreversable, deleted.
+          - These states influence the charges of an Instance
+          - You are charged for storage regardless if Running or Stopped since storage is still being used either way. Can only avoid this charge by Terminating the Instance.
+  - Amazon Machine Image(AMI)
+    - Is an image of an EC2 Instance
+    - Can be used to create an EC2 Instance, or be create from an EC2 Instance
+    - Similar to a server image used to create virtual machines or a usb device used to install an os like windows, mac, or linux
+    - Important:
+      - Contains attached permissions and these permissions control which accounts can and cannot use the AMI. 
+        - The AMI can be set as a public AMI in which case everyone is allowed to launch instances from that AMI
+        - The owner of an AMI is implicitly allowed to create EC2 Instances from that AMI
+        - Can add Explicit permissions to explicitly grant access to that AMI for specific AWS accounts
+        - Summary: 
+          - Public: everyone allowed
+          - Owner: Implicit allow
+          - Explicit: specific AWS accounts allowed
+      - Root Volume
+        - Is the drive that boots the OS. It can contain other volumes as well but always has at least the 1 boot volume.
+      - Block Device Mapping
+        - Configuration that links the volumes that the AMI has and how they're presented to the operating system
+        - Determines which volume is the Boot Volume and which volume is Data Volume
+  - Connecting to EC2
+    - Important ports to remember
+      - 3389: the remote desktop protocol, used for windows instances
+      - 22: SSH protocol, used for linux instances. You login/authenticate to that Instance using an SSH Key Pair(has a private part and public part)
