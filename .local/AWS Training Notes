@@ -26,3 +26,34 @@ IAM(Identity and Access Management)
   - When created, AWS provides both parts, and you're ONLY given access to see the secret access key upon creation.
   - If compromised, have to create a new pair.
   - Can only be used by User Identities
+
+**Availability**
+- Global Services
+  - What they are:
+    - Region-Agnostic: Available across the entire AWS global infrastructure without needing regional setup.
+    - Centralized Control Plane: Often have their management (control plane) hosted in a single region, while their data plane (actual user interaction) is distributed globally.
+  - Key Examples:
+    - IAM (Identity & Access Management): Manages user access and permissions globally.
+    - Route 53: Global DNS service to route users to the nearest healthy endpoint.
+    - CloudFront: Content Delivery Network (CDN) for low-latency content delivery.
+    - WAF (Web Application Firewall): Protects applications globally.
+    - Global Accelerator: Routes traffic over the AWS global network for performance. 
+  - Why they are important:
+    - High Availability & Disaster Recovery: Essential for building fault-tolerant systems, as a failure in one region doesn't stop these services.
+    - Simplified Global Management: Allows consistent security policies and configurations across all your deployments.
+    - Low Latency: Services like CloudFront and Route 53 bring content and traffic closer to end-users.
+    - Scalability: Inherently built for massive scale and global reach.
+    - Fault Isolation: Their design prevents a failure in one region from cascading and affecting the entire control plane. 
+- Regions
+  - What they are: Large, independent, and geographically separated locations around the world where AWS clusters its data centers.
+  - Purpose: To provide a physical presence near your customers, support disaster recovery, and meet data residency requirements.
+  - Example: us-east-1 (N. Virginia), eu-west-1 (Ireland). 
+- Availabilty Zones
+  - What they are: One or more discrete, physically isolated data centers within a Region, each with independent power, cooling, and networking.
+  - Purpose: To provide high availability and fault tolerance; launching resources across multiple AZs protects against a single data center failure.
+  - Connection: AZs within a Region are connected by high-bandwidth, low-latency, redundant fiber optic networks.
+  - Example: us-east-1a, us-east-1b are AZs within the us-east-1 Region. 
+- Edge Locations
+  - What they are: Hundreds of globally distributed Points of Presence (PoPs) that cache content closer to users.
+  - Purpose: Content delivery acceleration (CDN), reducing latency by serving static assets (images, videos) from a location near the user.
+  - Role: They are for caching and performance, not primary compute/storage like Regions/AZs. 
