@@ -271,6 +271,31 @@ Example of setting the instance profile which gives us the permission to use the
             - !Ref InstanceSecurityGroup
   ```
 
+**CloudWatch**
+Collects and manages operational data on your behalf
+performs 3 main jobs:
+1. Metrics - AWS Products, Apps, on-premises
+  a. have to use the CloudWatch agent for services not supported natively
+2. CloudWatch Logs - AWS Products, Apps, on-premises
+  a. have to use the CloudWatch agent for services not supported natively
+3. CloudWatch Events - AWS Services & Schedules
+  a. like an event hook
+  b. can generate event to 'do' something on a certain time of day or certain days of week, etc.
+Namespace
+  - a 'container' for monitoring data
+  - a way to keep things from becoming messy
+  - can be named anything as long is follows namespace naming rules
+    - all AWS data goes through an AWS Namespace `AWS/serviceName` e.g. `AWS/EC2`
+    - if you have a cat focused ig clone you could name it 'AWS/CATAGRAM`
+  - namespaces contain related metrics
+    - a metric is collection of related data points in a time ordered structure. e.g. cpu usage, network in/out, disk io
+    - a metric is NOT for a specific server. e.g. 'cpu utilization' is the metric and may be receiving data from a lot of different EC2 Instances
+if you have 5 ec2 instances sending data to CW, the way it is able to separate out the datapoints for each service is through Dimensions. 
+  - dimensions separate datapoints for different things or perspectives within the same metric. Some of the data the is included when sending to CW is the InstanceId and InstanceType, which enabled filtering when viewing a specific InstanceID
+Alarms - created and linked to a specific metric
+- takes an action based on a metric. 'OK' and 'ALARM' states, if in 'ALARM' state then take an action/sns
+  - there is a 3rd state called insufficient data, which is where alarms start when they dont have enough data to assess whether it it should be in the OK or ALARM state
+    - generally okay, just means that it is gathering more data
 
 
 
