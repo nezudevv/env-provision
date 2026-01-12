@@ -6,6 +6,7 @@ IAM(Identity and Access Management)
 - lets us create 3 different types of identity objects:
   - User
     - Identities which represent humans or applications that need access to your account
+    - Is the only Identity that can use IAM Access Keys
   - Group
     - Collection of related users e.g. development team, finance or HR
   - Role
@@ -15,3 +16,13 @@ IAM(Identity and Access Management)
 - Policy(Policy Document) 
   - objects/documents which can be used to allow or deny access to aws services when(only WHEN) they're attached to users, groups, or roles.
   - they just define allow or deny rights for these identity objects
+- IAM Access Keys
+  - Long-Term Credentials(like username&pw)
+  - An IAM user can have up to 2 access keys
+  - Can be created, deleted, made inactive or made active
+  - Made from 2 parts:
+    - Access Key ID
+    - Secret Access Key
+  - When created, AWS provides both parts, and you're ONLY given access to see the secret access key upon creation.
+  - If compromised, have to create a new pair.
+  - Can only be used by User Identities
