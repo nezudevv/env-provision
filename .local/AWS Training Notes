@@ -211,7 +211,7 @@ They always have the same IP range and same '1 subnet per AZ' architecture.
     - is a 2 step process:
       - 1. create a condition: CreateProdResources: !Equals [ !Ref EnvType, prod ]
       - 2. condition is used within resources in the template. add the prop Condition: CreateProdResources to the resource.
-  - outputs - a way for once the template is finished it can present outputs based on what's being created, updated or deleted
+  - outputs - a way for once the template is applied successfully it can present outputs based on what's being created, updated or deleted
     - example: print out the id of the Instance being created, address of blog, etc.
 - CF starts with a template, that template contains resources and other stuff above^
 - Once CF processes the template it will create a Stack
@@ -221,6 +221,13 @@ They always have the same IP range and same '1 subnet per AZ' architecture.
   - For any Logical Resources in the Stack CF makes a corresponding physical resource in your AWS Account
     - So the Logic Resource essential defines what Physical Resource will be provisioned/created
     - It is CF's job to keep these both in sync. This allows us to update the Logic Resource and when deployed it will update the same Physical Resource
+    - The LatestAmiId property in the yaml, it's type is a special type that is really useful feature. instead of having to explicitely provide an AMI Id we can say that we want the latest AMI for a given distrobution.
+      ```yaml
+      This gets the latest AMI Id for Amazon Linux 2023 OS in whichever region you apply this template in.
+        LatestAmiId:
+          Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+          Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
+      ```
 - automates infrastructure
 - When you upload a template directly to CF, it will save it to an S3 Bucket that it creates automatically, which is why when you're using AWS you may notice lots of Buckets with the prefix CF that get created in the Region automatically
 
