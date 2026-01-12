@@ -1,0 +1,17 @@
+IAM(Identity and Access Management)
+- is an ID Provider(IDP)
+- globally resilient service, any data here is always secure across all aws us regions
+- my aws account trusts it's instance of IAM, so, IAM has all authorisation the account and account root user has
+- able to create many different identities, all of which are trusted in the same way the account trusts IAM itself
+- lets us create 3 different types of identity objects:
+  - User
+    - Identities which represent humans or applications that need access to your account
+  - Group
+    - Collection of related users e.g. development team, finance or HR
+  - Role
+    - Can be used by AWS Services, or for granting external access to your account
+    - Generally used when you want to grant access to services in your account to an uncertain number of entities
+      - example, using it to allow all ec2 instances to have access to a certain s3 bucket
+- Policy(Policy Document) 
+  - objects/documents which can be used to allow or deny access to aws services when(only WHEN) they're attached to users, groups, or roles.
+  - they just define allow or deny rights for these identity objects
