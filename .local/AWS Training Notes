@@ -194,6 +194,38 @@ They always have the same IP range and same '1 subnet per AZ' architecture.
     - Most services which consume data and/or output data can have S3 as an option to take data from or put data to when it's finished
 - If you are using S3 for hosting a web page then you need to make sure that the name of the bucket is the same as the dns name for that web page
 
+**CloudFormation** - is a tool that lets you update and delete infrastructure in AWS in a consistent, repetable way using templates.
+- written in yaml or json
+- Main Parts:
+  - The Resources part of the template is the only required one
+    - The technical name of them is: 'Logical Resources'
+    - Has a type
+    - add a small snippet of an Instance being defined with imageid,instancetype,keyname, typef
+  - description - has to come directly after the aws template version if one is specified in the file
+  - metadata - one of the things this does is controlls how the different things in the CF Template are presented through the aws console UI
+  - parameter - where you can add fields which prompt the user for more information.
+    - if you prompt the template from the aws console UI you will see boxes that you need to type in or select from dropdowns
+    - example use cases: which size of Instance to create, the name of something, the number of AZs to use, can even be used to apply criteria for values that can be added as paremteres and apply default values
+  - mappings - not used as much when getting started with CF. allows you to create lookup tables 
+  - conditions - allow decision making in the template. can set certain things in a template that will only occur if a condition is met. 
+    - is a 2 step process:
+      - 1. create a condition: CreateProdResources: !Equals [ !Ref EnvType, prod ]
+      - 2. condition is used within resources in the template. add the prop Condition: CreateProdResources to the resource.
+  - outputs - a way for once the template is finished it can present outputs based on what's being created, updated or deleted
+    - example: print out the id of the Instance being created, address of blog, etc.
+- CF starts with a template, that template contains resources and other stuff above^
+- Once CF processes the template it will create a Stack
+  - A Stack contains all of the Logical Resources that the template tells it to contain. Is a living and acting representation of a template.
+  - 1 template to 1 or many Stacks
+- Important:
+  - For any Logical Resources in the Stack CF makes a corresponding physical resource in your AWS Account
+    - So the Logic Resource essential defines what Physical Resource will be provisioned/created
+    - It is CF's job to keep these both in sync. This allows us to update the Logic Resource and when deployed it will update the same Physical Resource
+- automates infrastructure
+
+
+
+
 
 
 
