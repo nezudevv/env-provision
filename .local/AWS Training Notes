@@ -302,6 +302,8 @@ Alarms - created and linked to a specific metric
 
 
 
+
+There is an AWS util called 'stress' that let's us add stress to a specific Instance
 Important reminder, by default even for Public Services, there is no access to it in AWS initialy except for the Account Root User
 
 
