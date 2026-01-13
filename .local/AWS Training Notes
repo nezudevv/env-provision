@@ -304,6 +304,7 @@ Alarms - created and linked to a specific metric
 
 
 There is an util called 'stress' that let's us add artificial stress to a specific Instance, can be done by connecting and accessing the console on the actual Instance: 
+useful for testing cloudwatch alarms and many more things
 `sudo yum install stress -y`
 lookup how many cpus the instance has since we want to create the same number of cpus using this util
 run `stress -c 1 -t 3600`
