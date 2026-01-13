@@ -303,7 +303,11 @@ Alarms - created and linked to a specific metric
 
 
 
-There is an AWS util called 'stress' that let's us add stress to a specific Instance
+There is an util called 'stress' that let's us add artificial stress to a specific Instance, can be done by connecting and accessing the console on the actual Instance: 
+`sudo yum install stress -y`
+lookup how many cpus the instance has since we want to create the same number of cpus using this util
+run `stress -c 1 -t 3600`
+result logs: `stress: info: [26429] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd`
 Important reminder, by default even for Public Services, there is no access to it in AWS initialy except for the Account Root User
 
 
