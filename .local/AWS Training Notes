@@ -297,8 +297,10 @@ Alarms - created and linked to a specific metric
   - there is a 3rd state called insufficient data, which is where alarms start when they dont have enough data to assess whether it it should be in the OK or ALARM state
     - generally okay, just means that it is gathering more data
 
-
-
+***High-Availability vs Fault-Tolerance vs Disaster Recovery***
+High-Availability - Minimise any outages, achieve maximum uptime(system availability).
+Fault-Tolerance - Operate Through Faults, much more complex and expensive than high availability. Also takes much more time and effort to setup and manage
+Disaster Recovery - Used when these^ don't work. Has many systems and features that help with this. The test will check my knowledge on how quickly we can recover and how best to recover given the various different products and services
 
 
 
