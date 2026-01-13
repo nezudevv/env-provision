@@ -302,6 +302,37 @@ High-Availability - Minimise any outages, achieve maximum uptime(system availabi
 Fault-Tolerance - Operate Through Faults, much more complex and expensive than high availability. Also takes much more time and effort to setup and manage
 Disaster Recovery - Used when these^ don't work. Has many systems and features that help with this. The test will check my knowledge on how quickly we can recover and how best to recover given the various different products and services
 
+***Route53***
+Provides 2 main services:
+- Register Domain
+- Host Zones, managed nameservers
+It is a Global Service, single database
+Globally Resilient - can tolerate the failure of 1 or more regions and operate without any problems
+One of the most important aws products
+Architecture and what does it do to provide these 2 main services:
+- Needs to be able to scale, stay highly performant, whilest remaining reliable and continue working through failure
+- Has a relationship with all of the major domain registries
+  - these are the companies that manage the top level domains
+  - they have been delegated this ability by IANA who manages the root zone for DNS
+  - these registries each manage 1 specific zone: 1 for .com, 1 for .io, .net, etc.
+  - the .org registry is managed by an organization called PIR
+- when a domain is registered, a few things happen:
+  1. Route53 checks the registry for that top level domain if the is available
+  2. If the domain is available then Route53 creates a Zone file for the domain being registered
+    - a Zone file is just a database that contains all of the DNS information for a particular domain, in this case animals4life.org
+  3. Allocates name servers for this Zone. These are servers that Route53 creates and manages which are distrobuted globaly and there are generally 4 of these for 1 individual Zone
+  4. Takes the Zone file that it created, known as a Hosted Zone in Route53, and puts that Zone file on to these 4 managed name servers
+  5. As part of registering the domain it communicates with the .org registry(PIR) and liazoning with that registry it adds these name server records into the Zone file for the .org top level domain - does this by using name server records
+    - name server records are how PIR delegates the admin of the domain to us. by adding the name server records to the org Zone they indicate that our 4 nameservers are authoritative for the domain and that's how a domain is registered using Route53
+Hosted Zones
+- Zone files in AWS
+- Hosted on foure managed name servers
+- Can be public 
+- Or private, linked to VPC(s)
+- stores records (recordsets)
+
+
+
 
 
 
