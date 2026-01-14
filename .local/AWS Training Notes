@@ -1,0 +1,349 @@
+IAM(Identity and Access Management)
+- is an ID Provider(IDP)
+- globally resilient service, any data here is always secure across all aws us regions
+- my aws account trusts it's instance of IAM, so, IAM has all authorisation the account and account root user has
+- able to create many different identities, all of which are trusted in the same way the account trusts IAM itself
+- lets us create 3 different types of identity objects:
+  - User
+    - Identities which represent humans or applications that need access to your account
+    - Is the only Identity that can use IAM Access Keys
+  - Group
+    - Collection of related users e.g. development team, finance or HR
+  - Role
+    - Can be used by AWS Services, or for granting external access to your account
+    - Generally used when you want to grant access to services in your account to an uncertain number of entities
+      - example, using it to allow all ec2 instances to have access to a certain s3 bucket
+- Policy(Policy Document) 
+  - objects/documents which can be used to allow or deny access to aws services when(only WHEN) they're attached to users, groups, or roles.
+  - they just define allow or deny rights for these identity objects
+- IAM Access Keys
+  - Long-Term Credentials(like username&pw)
+  - An IAM user can have up to 2 access keys
+  - Can be created, deleted, made inactive or made active
+  - Made from 2 parts:
+    - Access Key ID
+    - Secret Access Key
+  - When created, AWS provides both parts, and you're ONLY given access to see the secret access key upon creation.
+  - If compromised, have to create a new pair.
+  - Can only be used by User Identities
+
+**Availability**
+- Global Services
+  - What they are:
+    - Region-Agnostic: Available across the entire AWS global infrastructure without needing regional setup.
+    - Centralized Control Plane: Often have their management (control plane) hosted in a single region, while their data plane (actual user interaction) is distributed globally.
+  - Key Examples:
+    - IAM (Identity & Access Management): Manages user access and permissions globally.
+    - Route 53: Global DNS service to route users to the nearest healthy endpoint.
+    - CloudFront: Content Delivery Network (CDN) for low-latency content delivery.
+    - WAF (Web Application Firewall): Protects applications globally.
+    - Global Accelerator: Routes traffic over the AWS global network for performance. 
+  - Why they are important:
+    - High Availability & Disaster Recovery: Essential for building fault-tolerant systems, as a failure in one region doesn't stop these services.
+    - Simplified Global Management: Allows consistent security policies and configurations across all your deployments.
+    - Low Latency: Services like CloudFront and Route 53 bring content and traffic closer to end-users.
+    - Scalability: Inherently built for massive scale and global reach.
+    - Fault Isolation: Their design prevents a failure in one region from cascading and affecting the entire control plane. 
+- Regions
+  - What they are: Large, independent, and geographically separated locations around the world where AWS clusters its data centers.
+  - Purpose: To provide a physical presence near your customers, support disaster recovery, and meet data residency requirements.
+  - Example: us-east-1 (N. Virginia), eu-west-1 (Ireland). 
+- Availabilty Zones
+  - What they are: One or more discrete, physically isolated data centers within a Region, each with independent power, cooling, and networking.
+  - Purpose: To provide high availability and fault tolerance; launching resources across multiple AZs protects against a single data center failure.
+  - Connection: AZs within a Region are connected by high-bandwidth, low-latency, redundant fiber optic networks.
+  - Example: us-east-1a, us-east-1b are AZs within the us-east-1 Region. 
+- Edge Locations
+  - What they are: Hundreds of globally distributed Points of Presence (PoPs) that cache content closer to users.
+  - Purpose: Content delivery acceleration (CDN), reducing latency by serving static assets (images, videos) from a location near the user.
+  - Role: They are for caching and performance, not primary compute/storage like Regions/AZs. 
+
+**Virtual Private Cloud(VPC)** - A Virtual Network inside AWS
+- Is a regional service, meaning they are regionally resilient
+- Operate from multiple availability zones in a specific aws region
+- By default it is private and isolated. Services deployed within the same vpc can communicate but the vpc is isolated from other VPCs and from the puplic aws zone and public internet, unless configured otherwise
+  - 2 types of VPCs available inside the region
+    - Default VPC, maximum of 1 per region
+      - Initially created by AWS
+      - Come preconfigured in a very specific way, done by AWS themselves, but because of this they are a lot less flexible than custom VPCs
+    - Custom VPC, can configure them anyway we want as long as we stay within the rules and limits of VPCs
+      - Require that you configure everything end to end in detail and are 100% private by default
+      - Used in almost all serious AWS deployments because we can configure them exactly how we need
+        - can be configured in a variety of sizes and structures, can be linked with other VPCs and even configured to communicate with other cloud platforms and on premises networks
+- Every VPC is allocated a range of IP Addresses called the VPC CIDR(Cider): 172.31.0.0/16, which defines the start and end range of IP Addresses that the VPC can use.
+  - Everything inside the VPC uses this CIDR range of that VPC
+  - If anything needs to communicate with a VPC, assuming we allowed it, then it needs to communicate to that VPC CIDR and the outgoing connections will initially originate from somewhere in that VPC CIDR
+  - Custom VPCs can have multiple CIDR ranges but the default VPC only gets 1 and it's always the same: 172.31.0.0/16 which is actually a strength of the default VPC as it's always configured in the same predictable way
+- One way that a VPC provides resilience is that it can be subdivided into subnets(subnetworks)
+  - Each subnet inside a VPC is located in 1 availabilty zone and is set on creation and can never be changed
+  - With the default VPC it is always configured in the same way, it's preconfigured to have 1 subnet in every availability zone in that region
+  - Each of the subnets use part of the VPCs range of IP addresses(CIDR range) and none of them can be the same as other subnets in the VPC and cannot overlap with another subnets in the VPC
+  - Each subnet is given an ip range, which defines the start and end addresses that any private services inside those subnets will use
+  - Is how VPC is resilient, its deployed into a region and is broken down into subnets, each subnet is inside 1 availability zone so if that az fails then the sub net in that az also fails but any of the other subnets inside the vpc that are located in other AZs will continue to operate normally as long as their AZs are unaffected
+- Default VPC Facts
+  - 1 per region(maximum) - can be removed & recreated
+    - Some AWS services assume that the default VPC will be present, so it's best to leave the default VPCs active in your regions but not to use them for anything production related because they're too inflexible
+  - A strength(and weakness) is that the Default VPC CIDR is ALWAYS 172.31.0.0/16 and is the same in every region
+    - Is predictable, but can't ever be changed
+    - The number of available IP Addresses is fairly large though, since it uses a /16 CIDR
+      - Inside every default VPC, a smaller /20 Subnet is created in every AZ in that region
+        - Sometimes it's 3, in others it might be 4, depending on how many AZs are in that region
+      - The higher the CIDR range /number is, the smaller the network is
+        - slash /17, for example, is half the size of a slash /16. So, 2 slash /17's will fit into one slash /16
+          - So, 16 slash /20 subnets can fit into the slash /16 that the VPC uses. So, whichever region we pick there's going to be plenty of spare capacity, enough for up to 16 availability zones
+  - Auto provided with an Internet Gateway(IGW), Security Group(SG) and NACL
+  - By default, anything placed in the default VPC subnets is assigned a public IPv4 address
+    - Public in this case just means it's in the AWS public zone. Default VPCs comes preconfigured this way
+A default VPC is created once per region when an AWS account is first created.
+There can only be one default VPC per region, and they can be deleted and recreated from the console UI.
+They always have the same IP range and same '1 subnet per AZ' architecture.
+- is the service we use to create private networks inside aws that other private services will run from. VPCs is also the service we will use connect aws private networks to on premises networks when creating a hybrid environment. It's also the service we use to connect to other cloud platforms when creating a multi cloud deployment.
+- There tends to be a lot of vpc related questions on the exam.
+
+**Elastic Compute Cloud(EC2)**
+- Should be the default starting point for any compute requirement in AWS
+- Important facts & features it provides:
+  - IAAS(Infrastructure As A Service) - unit of consumption is the instance
+  - Provides access to virtual machines known as EC2 Instances
+  - An Instance is just an operating system configured in a certain way with a certain set of allocated resources
+  - Is a private AWS service, which means that by default it runs in the private AWS Zone
+    - Specifically, an EC2 Instance is configured to launch to a single VPC Subnet, which we set when we launch the Instance. When we launch the Instance you also have to configure any public access, should you want that. If you DO want to allow public access for an EC2 Instance then the VPC that it's running within needs to support that public access. Remember, that with the default VPC this is configured for us, but if we use a custom VPC then we need to handle that configuration.
+  - Is AZ Resilient - Instance fails if AZ fails
+    - This happens because an Instance is launched into a specific subnet and that subnet in a sepcific AZ
+  - When you launch an Instance, you can choose various sizes and capabilities for that Instance which influence the resources that the Instance gets as well as any extra capabilities such as GPUs, more advanced storage or networking, or special purpose processes. Some of these can be changed afterwards as well.
+  - On demand billing - either on the second or the hour depending on the software that is launched with the Instance. Only pay for what you consume.
+    - Multiple components to an instance charge: running the Instance(amount of CPU & Memory that it consumes), storage that it uses, extras for any commercial software that the Instance is launched with.
+  - Can use a number of different types of storage
+    - 2 popular types: Local on-host storage & Elastic Block Store(EBS)
+  - Instance Lifecycle
+    - Has an attribute called a State
+      - The State of the Instance provides an indication into it's condition
+        - Running, Stopped, Terminated
+          - In between states: Stopping, Shutting Down, Pending
+          - Can go between Running and Stopped many times but it can only be Terminated once, irreversable, deleted.
+          - These states influence the charges of an Instance
+          - You are charged for storage regardless if Running or Stopped since storage is still being used either way. Can only avoid this charge by Terminating the Instance.
+  - Amazon Machine Image(AMI)
+    - Is an image of an EC2 Instance
+    - Can be used to create an EC2 Instance, or be create from an EC2 Instance
+    - Similar to a server image used to create virtual machines or a usb device used to install an os like windows, mac, or linux
+    - Important:
+      - Contains attached permissions and these permissions control which accounts can and cannot use the AMI. 
+        - The AMI can be set as a public AMI in which case everyone is allowed to launch instances from that AMI
+        - The owner of an AMI is implicitly allowed to create EC2 Instances from that AMI
+        - Can add Explicit permissions to explicitly grant access to that AMI for specific AWS accounts
+        - Summary: 
+          - Public: everyone allowed
+          - Owner: Implicit allow
+          - Explicit: specific AWS accounts allowed
+      - Root Volume
+        - Is the drive that boots the OS. It can contain other volumes as well but always has at least the 1 boot volume.
+      - Block Device Mapping
+        - Configuration that links the volumes that the AMI has and how they're presented to the operating system
+        - Determines which volume is the Boot Volume and which volume is Data Volume
+  - Connecting to EC2
+    - Important ports to remember
+      - 3389: the remote desktop protocol, used for windows instances
+      - 22: SSH protocol, used for linux instances. You login/authenticate to that Instance using an SSH Key Pair(has a private part and public part)
+
+**Simple Storage Service(S3)**
+- (This may not be the case now, the last time i created a bucket i did not have to specify the region, instead it defaults to region you have selected currently) Since s3 bucket namespaces are global, that means you only select the region upon creating the bucket, not swapping regions using the main select(is a point of confusion)
+- Almost all other AWS Services have some sort of interaction with S3
+- Global Storage Platform - regional based/resilient. Stored in a specific Region at rest. Will never leave that region unless you explicitely configure it to.
+  - Is Regionally Resilient meaning the data is replicated across AZs in that region. This let's S3 tolerate the failure of an AZ and it also has some capability to replicate data between regions.
+  - The UI can be confusing because it seemingly doesn't let you select a Region, instead you select the Region when you create things inside S3.
+- Public service(can be accessed anywhere there is an internet connection) that runs on the AWS Public Zone, unlimited data & multi-user(millions of users could be accessing the same content)
+- Perfect for storing large amounts of data. Movies, audio, photos, text, large data sets
+- Is Economical & accessed via UI/CLI/API/HTTP
+- Should be the default starting point unless your requirement isn't delivered by S3
+- Has 2 main things that it delivers
+  - Objects
+    - Is the data that S3 stores
+    - Can be thought of like files
+      - Made up of: 
+        - Key: Identifies the Object in the Bucket
+        - Value: Data/Contents
+      - Important: How large the Object is can range from Zero bytes up to 5TB
+  - Buckets
+    - Containers for Objects
+    - Created in a specific AWS Region
+    - Data inside the Bucket has a primary home Region and never leaves that Region unless you as an architect configures the data to leave that Region.
+      - This means that S3 has stable and controlled data sovereignty and means that the blast radius is that Region
+    - Important: Name of the bucket has to be globally unique
+    - Can hold unlimited number of objects
+    - Important: As an object storage system an S3 Bucket has no complex structure, it is flat. No nesting, though the ui does show it nested for easier use.
+- Also has some other things like: Version ID, Metadata, Access Control, Subresources
+- Important: 
+  - Bucket names are globally unique
+  - Bucket names must be 3 - 36 character, all lower case, no underscores
+  - Bucket names must start with a lowercase letter or a number
+  - Bucket names cannot be IP formatted e.g. 1.1.1.1
+  - Some limits on the number of buckets per account: 100 soft limit, 1000 hard per account
+  - You can have an unlimited number of Objects per bucket, 0 bytes to 5TB per Object
+  - Object structure is: Key = Name, Value = Data
+- Patterns and Anti-Patterns
+  - S3 is an object store - not file or block
+    - if there is a need to access the entire object(e.g. audio file, etc.) then you want an Object store.
+    - it's not block storage so, you cannot mount it as a mount point or a volume on linux or windows
+      - block storage is basically virtual hard disks, generally limited to 1 thing accessing it at a time.
+  - Great for large scale data storage, distribution or upload
+  - Great for offloading things
+    - If you have a blog with lots of posts/images/etc, you could move it to an S3 Bucket for cheap
+    - You can sometimes also shrink your Instance by offloading data to S3
+  - Should be the default for any Input to AWS Services or Output from AWS Services
+    - Most services which consume data and/or output data can have S3 as an option to take data from or put data to when it's finished
+- If you are using S3 for hosting a web page then you need to make sure that the name of the bucket is the same as the dns name for that web page
+
+**CloudFormation** - is a tool that lets you update and delete infrastructure in AWS in a consistent, repetable way using templates.
+- written in yaml or json
+- Main Parts:
+  - The Resources part of the template is the only required one
+    - The technical name of them is: 'Logical Resources'
+    - Has a type
+    - add a small snippet of an Instance being defined with imageid,instancetype,keyname, typef
+  - description - has to come directly after the aws template version if one is specified in the file
+  - metadata - one of the things this does is controlls how the different things in the CF Template are presented through the aws console UI
+  - parameter - where you can add fields which prompt the user for more information.
+    - if you prompt the template from the aws console UI you will see boxes that you need to type in or select from dropdowns
+    - example use cases: which size of Instance to create, the name of something, the number of AZs to use, can even be used to apply criteria for values that can be added as paremteres and apply default values
+  - mappings - not used as much when getting started with CF. allows you to create lookup tables 
+  - conditions - allow decision making in the template. can set certain things in a template that will only occur if a condition is met. 
+    - is a 2 step process:
+      - 1. create a condition: CreateProdResources: !Equals [ !Ref EnvType, prod ]
+      - 2. condition is used within resources in the template. add the prop Condition: CreateProdResources to the resource.
+  - outputs - a way for once the template is applied successfully it can present outputs based on what's being created, updated or deleted
+    - example: print out the id of the Instance being created, address of blog, etc.
+- CF starts with a template, that template contains resources and other stuff above^
+- Once CF processes the template it will create a Stack
+  - A Stack contains all of the Logical Resources that the template tells it to contain. Is a living and acting representation of a template.
+  - 1 template to 1 or many Stacks
+- Important:
+  - For any Logical Resources in the Stack CF makes a corresponding physical resource in your AWS Account
+    - So the Logic Resource essential defines what Physical Resource will be provisioned/created
+    - It is CF's job to keep these both in sync. This allows us to update the Logic Resource and when deployed it will update the same Physical Resource
+    - The LatestAmiId property in the yaml, it's type is a special type that is really useful feature. instead of having to explicitely provide an AMI Id we can say that we want the latest AMI for a given distrobution.
+      ```yaml
+      This gets the latest AMI Id for Amazon Linux 2023 OS in whichever region you apply this template in.
+        LatestAmiId:
+          Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+          Default: '/aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64'
+      ```
+- automates infrastructure
+- When you upload a template directly to CF, it will save it to an S3 Bucket that it creates automatically, which is why when you're using AWS you may notice lots of Buckets with the prefix CF that get created in the Region automatically
+- CF functions
+  -  `!Ref` this is going to reference another part of the cloudformation template: `!Ref EC2Instance` will reference the EC2 Logical Resource that we defined earlier
+  -  `!GetAtt` a more capable version of `!Ref`. You still refere to another thing defined in the template but you can pick from different data that thing generates:
+    ```yaml
+      Outputs:
+        AZ:
+          Description: Availability Zone of the newly created EC2 instance
+          Value: !GetAtt
+            - EC2Instance
+            - AvailabilityZone <- gets the AZ from the newly created EC2Instance
+    ```
+- Interesting bit, creating the Security Group Logical Resource. Allows 2 different types of traffic in to whatever this security group is attached to: SSH via port 22, HTTP via port 80
+  ```yaml
+    Resources:
+      InstanceSecurityGroup:
+        Type: 'AWS::EC2::SecurityGroup'
+        Properties:
+          GroupDescription: Enable SSH access via port 22 and 80
+          SecurityGroupIngress:
+            - IpProtocol: tcp
+              FromPort: '22'
+              ToPort: '22'
+              CidrIp: !Ref SSHandWebLocation
+            - IpProtocol: tcp
+              FromPort: '80'
+              ToPort: '80'
+              CidrIp: !Ref SSHandWebLocation
+  ```
+Example of setting the instance profile which gives us the permission to use the SessionManager AWS service
+  ```yaml
+    Resources:
+      EC2Instance:
+        Type: AWS::EC2::Instance
+        Properties:
+          InstanceType: "t2.nano"
+          ImageId: !Ref LatestAmiId
+          IamInstanceProfile: !Ref SessionManagerInstanceProfile
+          SecurityGroups:
+            - !Ref InstanceSecurityGroup
+  ```
+
+**CloudWatch**
+Collects and manages operational data on your behalf
+performs 3 main jobs:
+1. Metrics - AWS Products, Apps, on-premises
+  a. have to use the CloudWatch agent for services not supported natively
+2. CloudWatch Logs - AWS Products, Apps, on-premises
+  a. have to use the CloudWatch agent for services not supported natively
+3. CloudWatch Events - AWS Services & Schedules
+  a. like an event hook
+  b. can generate event to 'do' something on a certain time of day or certain days of week, etc.
+Namespace
+  - a 'container' for monitoring data
+  - a way to keep things from becoming messy
+  - can be named anything as long is follows namespace naming rules
+    - all AWS data goes through an AWS Namespace `AWS/serviceName` e.g. `AWS/EC2`
+    - if you have a cat focused ig clone you could name it 'AWS/CATAGRAM`
+  - namespaces contain related metrics
+    - a metric is collection of related data points in a time ordered structure. e.g. cpu usage, network in/out, disk io
+    - a metric is NOT for a specific server. e.g. 'cpu utilization' is the metric and may be receiving data from a lot of different EC2 Instances
+if you have 5 ec2 instances sending data to CW, the way it is able to separate out the datapoints for each service is through Dimensions. 
+  - dimensions separate datapoints for different things or perspectives within the same metric. Some of the data the is included when sending to CW is the InstanceId and InstanceType, which enabled filtering when viewing a specific InstanceID
+Alarms - created and linked to a specific metric
+- takes an action based on a metric. 'OK' and 'ALARM' states, if in 'ALARM' state then take an action/sns
+  - there is a 3rd state called insufficient data, which is where alarms start when they dont have enough data to assess whether it it should be in the OK or ALARM state
+    - generally okay, just means that it is gathering more data
+
+***High-Availability vs Fault-Tolerance vs Disaster Recovery***
+High-Availability - Minimise any outages, achieve maximum uptime(system availability).
+Fault-Tolerance - Operate Through Faults, much more complex and expensive than high availability. Also takes much more time and effort to setup and manage
+Disaster Recovery - Used when these^ don't work. Has many systems and features that help with this. The test will check my knowledge on how quickly we can recover and how best to recover given the various different products and services
+
+***Route53***
+Provides 2 main services:
+- Register Domain
+- Host Zones, managed nameservers
+It is a Global Service, single database
+Globally Resilient - can tolerate the failure of 1 or more regions and operate without any problems
+One of the most important aws products
+Architecture and what does it do to provide these 2 main services:
+- Needs to be able to scale, stay highly performant, whilest remaining reliable and continue working through failure
+- Has a relationship with all of the major domain registries
+  - these are the companies that manage the top level domains
+  - they have been delegated this ability by IANA who manages the root zone for DNS
+  - these registries each manage 1 specific zone: 1 for .com, 1 for .io, .net, etc.
+  - the .org registry is managed by an organization called PIR
+- when a domain is registered, a few things happen:
+  1. Route53 checks the registry for that top level domain if the is available
+  2. If the domain is available then Route53 creates a Zone file for the domain being registered
+    - a Zone file is just a database that contains all of the DNS information for a particular domain, in this case animals4life.org
+  3. Allocates name servers for this Zone. These are servers that Route53 creates and manages which are distrobuted globaly and there are generally 4 of these for 1 individual Zone
+  4. Takes the Zone file that it created, known as a Hosted Zone in Route53, and puts that Zone file on to these 4 managed name servers
+  5. As part of registering the domain it communicates with the .org registry(PIR) and liazoning with that registry it adds these name server records into the Zone file for the .org top level domain - does this by using name server records
+    - name server records are how PIR delegates the admin of the domain to us. by adding the name server records to the org Zone they indicate that our 4 nameservers are authoritative for the domain and that's how a domain is registered using Route53
+Hosted Zones
+- Zone files in AWS
+- Hosted on foure managed name servers
+- Can be public 
+- Or private, linked to VPC(s)
+- stores records (recordsets)
+
+
+
+
+
+
+There is an util called 'stress' that let's us add artificial stress to a specific Instance, can be done by connecting and accessing the console on the actual Instance: 
+useful for testing cloudwatch alarms and many more things
+`sudo yum install stress -y`
+lookup how many cpus the instance has since we want to create the same number of cpus using this util
+run `stress -c 1 -t 3600`
+result logs: `stress: info: [26429] dispatching hogs: 1 cpu, 0 io, 0 vm, 0 hdd`
+Important reminder, by default even for Public Services, there is no access to it in AWS initialy except for the Account Root User
+
+
+
+
