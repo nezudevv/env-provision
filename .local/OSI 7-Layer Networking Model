@@ -1,0 +1,43 @@
+Local Networking - Ethernet
+Routing
+Segmenting, Ports & Sessions
+Applications
+
+The OSI (Open Systems Interconnection) model is a framework that describes the functions and interactions of computer systems in a network. It is divided into seven layers, with each layer responsible for specific functions in data transmission.
+Each Layer understands it's layer and all layers below it. Layer 1 only understand(only has layer 1 capabilites) Layer 1 but Layer 3 has layers 3,2, and 1 capability.
+  
+Networking stack is the software that does each of these functions. Your phone, router, etc all have a Networking stack
+***Layer 7 - Application***
+You could have a web browser on one side and a router on the other side
+Conceptually, any data in the web browser will make it's way through the layers of one side to layer 1 and back up on the other side to the web server software
+***Layer 6 - Presentation***
+1,2,3 are the Media Layers
+
+4,5,6,7 are the Host Layers
+***Layer 4/5 - Transport & Session***
+
+***Layer 3 - Network***
+
+***Layer 2 - DataLink***
+
+***Layer 1 - Physical***
+Physical network cards or interfaces
+Physical Medium can be Copper(electrical), Fibre(light) or WIFI(Radio Frequencies)
+Layer 1 (Physical) specifications define the transmission and reception of RAW BIT STREAMS between a device and a SHARED physical medium. It defines things like voltage levels, timing, rates, distances, modulation, and connectors
+  Ensures multiple devices will have a shared understanding of the medium(cable). if the wire between 2 devices send no electrical signal and that means a value of binary 0, and when it does send a signal it means binary 1 then since both devices have a shared understanding of that then they can communicate
+  good example is 2 computers wired together with an electrical cable, their network cards would be communicating via those electrical signals
+  Hubs can be used to connect more than 2 devices. On a hub: anything received on any port, is transmitted on every other port. Including errors and collisions - this is known as a broadcast medium and it cannot be used for 1 specific device to talk to another specific device. 
+    it is possible for multiple devices to transmit data at once, this causes a collision and renders all of the information useless.
+    L1 has NO media access control and NO collision detection
+Summary:
+- focuses on a physical shared medium
+- standards for transmitting onto the medium
+- standards for receiving from the medium
+- no access control
+- no uniquely identified devices
+- no device -> device communications
+- the data layer adds a lot of capabilities on top of this layer
+Layer 1, also known as the physical layer,
+  is the first and lowest layer in the OSI model. It is responsible for the physical transmission of data over a communication channel, such as
+  a wire, cable, or wireless signal. This layer defines the physical characteristics of the communication medium, including voltage levels, cable
+  types, and signaling methods, to ensure that data is transmitted accurately and reliably between devices.
