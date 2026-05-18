@@ -48,5 +48,39 @@
       "J": ["workspace::SendKeystrokes", "alt-down"],
       "K": ["workspace::SendKeystrokes", "alt-up"]
     }
+  },
+  {
+    "context": "SettingsWindow",
+    "bindings": {
+      "cmd-w": null
+    }
+  },
+  {
+    "context": "SettingsWindow",
+    "bindings": {
+      "escape": null
+    }
+  },
+  {
+    "context": "RulesLibrary",
+    "bindings": {
+      "cmd-w": null
+    }
+  },
+  {
+    "bindings": {
+      "cmd-shift-w": null
+    }
+  },
+  {
+    "context": "Pane",
+    "bindings": {
+      "ctrl-w": [
+        "pane::CloseActiveItem",
+        {
+          "close_pinned": false
+        }
+      ]
+    }
   }
 ]
