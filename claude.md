@@ -123,7 +123,8 @@ Fixes tmux plugin detection issues (TPM doesn't always detect new plugins proper
 Fuzzy finder for projects, creates/switches tmux sessions:
 - **Lines 4-7:** Configurable search paths (currently `~/Developer`, `~/env-provision`)
 - **Line 10:** MAX_DEPTH=4 (searches 4 levels deep)
-- **Lines 27-41:** Excludes auto-generated dirs: `.git`, `node_modules`, `dist`, `build`, `extensions`, etc.
+- **Lines 27-42:** Excludes auto-generated dirs: `.git`, `node_modules`, `dist`, `build`, `extensions`, etc.
+- **Lines 27-28:** Special options appear first: `notes` (opens vault in nvim), `jira` (opens Jira plugin)
 - Uses fzf for selection
 - Creates tmux session with sanitized name
 - Switches to session or creates new one

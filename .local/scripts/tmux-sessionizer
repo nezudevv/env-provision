@@ -21,9 +21,10 @@ if [ ${#find_paths[@]} -eq 0 ]; then
 	exit 1
 fi
 
-# Exclude auto-generated directories and add special options (like jira) at the top
+# Exclude auto-generated directories and add special options (like jira, notes) at the top
 selected=$(
 	{
+		echo "notes"
 		echo "jira"
 		find "${find_paths[@]}" -mindepth 1 -maxdepth "$MAX_DEPTH" \
 			-type d \( \
@@ -50,8 +51,12 @@ if [[ -z "$selected" ]]; then
 	exit 0
 fi
 
-# Handle special sessions (like jira)
-if [[ "$selected" == "jira" ]]; then
+# Handle special sessions (like jira, notes)
+if [[ "$selected" == "notes" ]]; then
+	selected_name="notes"
+	selected_dir="$HOME/.local/vaults"
+	startup_command="nvim"
+elif [[ "$selected" == "jira" ]]; then
 	selected_name="jira"
 	selected_dir="$HOME"
 	startup_command="nvim -c 'Jira FW'"

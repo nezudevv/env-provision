@@ -2,3 +2,4 @@ theme = Kanagawa Dragon
 adjust-cell-height = 10%
 font-family = JetBrains Mono
 font-size = 18
+#background-opacity = .6

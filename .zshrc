@@ -5,6 +5,15 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
+# Fastest way to find a file and open in Zed
+zf() {
+  # fd: finds files (ignoring .gitignore)
+  # fzf: fuzzy filters them
+  # zed: opens the result
+  local file=$(fd --type f --hidden --exclude .git | fzf --height 40% --reverse)
+  [ -n "$file" ] && zed "$file"
+}
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
