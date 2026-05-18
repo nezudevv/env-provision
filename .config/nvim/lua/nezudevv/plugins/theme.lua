@@ -54,7 +54,7 @@ return {
 				compile = false,
 				undercurl = true,
 				commentStyle = { italic = false },
-				functionStyle = { bold = false, italic = false  },
+				functionStyle = { bold = false, italic = false },
 				keywordStyle = { bold = false, italic = false },
 				statementStyle = { bold = false, italic = false },
 				typeStyle = { bold = false, italic = false },
@@ -64,17 +64,60 @@ return {
 				theme = "dragon",
 				background = {
 					dark = "dragon",
-					light = "lotus"
+					light = "lotus",
 				},
-				-- overrides = function(colors)
-				-- 	return {
-				-- 		-- Make keywords lighter/whiter instead of reddish
-				-- 		Keyword = { fg = colors.palette.fujiWhite, italic = true },
-				-- 		["@keyword"] = { link = "Keyword" },
-				-- 		["@keyword.javascript"] = { link = "Keyword" },
-				-- 		["@keyword.typescript"] = { link = "Keyword" },
-				-- 	}
-				-- end,
+				overrides = function(colors)
+					local theme = colors.theme
+					return {
+						-- Main Neovim UI (Gutter & Floats)
+						-- NormalFloat = { bg = "none" },
+						-- FloatBorder = { bg = "none" },
+						-- FloatTitle = { bg = "none" },
+						-- SignColumn = { bg = "none" },
+						-- LineNr = { bg = "none" },
+						-- WinSeparator = { bg = "none" },
+
+						-- Snacks.nvim Specific Transparency
+						-- SnacksBackdrop = { bg = "none" }, -- The dimming effect behind pickers
+						-- SnacksNormal = { bg = "none" }, -- Picker background
+						-- SnacksBorder = { bg = "none" }, -- Picker border
+						-- SnacksInputNormal = { bg = "none" }, -- Input window background
+						-- SnacksInputBorder = { bg = "none" }, -- Input window border
+
+						-- Snacks Notifier (for notifications)
+						-- SnacksNotifierNormal = { bg = "none" },
+						-- SnacksNotifierBorder = { bg = "none" },
+
+						-- Treesitter Context (The sticky header at the top)
+						-- TreesitterContext = { bg = "none" },
+						-- TreesitterContextLineNumber = { bg = "none" },
+
+						-- Clear all Mini.Statusline sections
+						-- MiniStatuslineModeNormal = { bg = "none" },
+						-- MiniStatuslineModeInsert = { bg = "none" },
+						-- MiniStatuslineModeVisual = { bg = "none" },
+						-- MiniStatuslineModeReplace = { bg = "none" },
+						-- MiniStatuslineModeCommand = { bg = "none" },
+						
+						-- MiniStatuslineDevicons = { bg = "none" },
+						-- MiniStatuslineFilename = { bg = "none" },
+						-- MiniStatuslineFileinfo = { bg = "none" },
+						-- MiniStatuslineInactive = { bg = "none" },
+
+						-- GitSigns Transparency
+						-- This removes the background from the icons in the gutter
+						-- GitSignsAdd = { bg = "none" },
+						-- GitSignsChange = { bg = "none" },
+						-- GitSignsDelete = { bg = "none" },
+
+						-- CursorLine = { bg = "none", underline = true, sp = colors.palette.dragonBlue },
+						-- CursorLineNr = { fg = colors.palette.carpYellow, bg = "none", bold = true },
+
+						-- Keep your keyword overrides from before
+						-- Keyword = { fg = colors.palette.fujiWhite, italic = true },
+						-- ["@keyword"] = { link = "Keyword" },
+					}
+				end,
 			})
 			vim.cmd("colorscheme kanagawa-dragon")
 		end,

@@ -112,6 +112,8 @@ return {
 			-- Note: ts_ls and volar are configured manually below using vim.lsp.config()
 			-- Don't add vue_ls here - it's the same as volar and causes duplicates
 			vtsls = { enabled = false }, -- Disable vtsls, we're using ts_ls
+			tsgo = {},
+			ts_ls = { enabled = false },
 			lua_ls = {
 				settings = {
 					Lua = {
@@ -140,9 +142,9 @@ return {
 			end
 		end
 		vim.list_extend(ensure_installed, {
-			"stylua", -- Used to format Lua code
-			"typescript-language-server", -- ts_ls for TypeScript/JavaScript
-			"vue-language-server", -- Volar for Vue
+			"stylua",
+			"typescript-language-server", -- ts_ls: required by vue_ls for Vue SFCs
+			"vue-language-server",
 		})
 		require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
@@ -156,7 +158,7 @@ return {
 				function(server_name)
 					-- Skip servers we configured manually with vim.lsp.config() or disabled
 					-- Note: vue_ls and volar are the same server, we handle it manually as "volar"
-					if server_name == "ts_ls" or server_name == "vue_ls" or server_name == "vtsls" then
+					if server_name == "ts_ls" or server_name == "vue_ls" or server_name == "vtsls" or server_name == "tsgo" then
 						return
 					end
 					local server = servers[server_name] or {}
@@ -170,12 +172,12 @@ return {
 			},
 		})
 
-		-- NOW setup ts_ls and vue_ls AFTER mason-lspconfig
-		-- Use vim.lsp.config API (Neovim 0.11+) which properly overrides defaults
+		-- ts_ls restricted to vue only — vue_ls requires it as a hybrid mode dependency.
+		-- tsgo handles plain TS/JS files; ts_ls handles the TS layer inside Vue SFCs.
 		vim.lsp.config("ts_ls", {
 			cmd = { "typescript-language-server", "--stdio" },
 			capabilities = capabilities,
-			filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
+			filetypes = { "vue" },
 			root_markers = { "package.json", "tsconfig.json", "jsconfig.json", ".git" },
 			init_options = {
 				plugins = {
@@ -186,31 +188,23 @@ return {
 					},
 				},
 			},
-			settings = {
-				typescript = {
-					inlayHints = {
-						includeInlayParameterNameHints = "all",
-						includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-						includeInlayFunctionParameterTypeHints = true,
-						includeInlayVariableTypeHints = true,
-						includeInlayPropertyDeclarationTypeHints = true,
-						includeInlayFunctionLikeReturnTypeHints = true,
-						includeInlayEnumMemberValueHints = true,
-					},
-				},
-				javascript = {
-					inlayHints = {
-						includeInlayParameterNameHints = "all",
-						includeInlayParameterNameHintsWhenArgumentMatchesName = false,
-						includeInlayFunctionParameterTypeHints = true,
-						includeInlayVariableTypeHints = true,
-						includeInlayPropertyDeclarationTypeHints = true,
-						includeInlayFunctionLikeReturnTypeHints = true,
-						includeInlayEnumMemberValueHints = true,
-					},
-				},
-			},
 		})
+		vim.lsp.enable("ts_ls")
+		-- Define the tsgo configuration
+		vim.lsp.config("tsgo", {
+			cmd = { "tsgo", "--lsp", "--stdio" },
+			filetypes = {
+				"javascript",
+				"javascriptreact",
+				"typescript",
+				"typescriptreact",
+			},
+			root_markers = { "package.json", "tsconfig.json", "jsconfig.json", ".git" },
+			capabilities = capabilities,
+		})
+
+		-- Enable it
+		vim.lsp.enable("tsgo")
 
 		-- Setup vue_ls (formerly volar) AFTER ts_ls
 		vim.lsp.config("vue_ls", {
@@ -221,7 +215,7 @@ return {
 		})
 
 		-- Enable both servers
-		vim.lsp.enable("ts_ls")
+		-- vim.lsp.enable("ts_ls")
 		vim.lsp.enable("vue_ls")
 	end,
 }
