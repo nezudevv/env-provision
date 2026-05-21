@@ -105,7 +105,8 @@ fi
 # Install global npm packages
 log "Installing global npm packages..."
 npm_packages=(
-	"@vue/language-server"  # Required for Vue3 TypeScript support in Neovim
+	"@vue/language-server"         # Required for Vue3 TypeScript support in Neovim
+	"@typescript/native-preview"   # tsgo LSP server for TypeScript/JavaScript
 )
 
 for package in "${npm_packages[@]}"; do
