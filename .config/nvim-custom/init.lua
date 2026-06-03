@@ -4,4 +4,4 @@ require("nezudevv")
 vim.diagnostic.config({ virtual_text = true })
 vim.o.termguicolors = true
 vim.cmd("colorscheme kanagawa-dragon")
-vim.opt.linespace = 8
+vim.opt.linespace = 10

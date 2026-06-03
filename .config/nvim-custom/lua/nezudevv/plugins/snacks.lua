@@ -5,7 +5,6 @@ return {
 		opts = {
 			gitbrowse = { enabled = true },
 			picker = {},
-			zen = { enabled = true },
 		},
 		keys = {
 			-- Top Level - picker
@@ -20,9 +19,6 @@ return {
 			{ "<leader>sr", function() Snacks.picker.resume() end, desc = "[S]earch [R]esume" },
 			{ "<leader>s.", function() Snacks.picker.recent() end, desc = '[S]earch Recent Files ("." for repeat)' },
 
-			-- zen mode
-			{ "<leader>z", function() Snacks.zen() end, desc = "[Z]en Mode" },
-
 			-- gitbrowse
 			{ "<leader>go", function() Snacks.gitbrowse() end, desc = "[G]it [O]pen in Browser", mode = { "n", "v" }},
 
@@ -32,17 +28,17 @@ return {
 			{ "<leader>sn", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "[S]earch [N]eovim files" },
 		},
 	},
-	{
-		"folke/flash.nvim",
-		event = "VeryLazy",
-		---@type Flash.Config
-		opts = {},
-		keys = {
-			{ "/", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
-			{ "?", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
-			-- { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
-			-- { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
-			-- { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
-		},
-	}
+	-- {
+	-- 	"folke/flash.nvim",
+	-- 	event = "VeryLazy",
+	-- 	---@type Flash.Config
+	-- 	opts = {},
+	-- 	keys = {
+	-- 		{ "/", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+	-- 		{ "?", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+	-- 		-- { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+	-- 		-- { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+	-- 		-- { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+	-- 	},
+	-- }
 }
