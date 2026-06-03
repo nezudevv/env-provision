@@ -191,6 +191,7 @@ export NEOVIDE_CONFIG_PATH="$HOME/.config/neovide/neovide.toml"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 test -e "${HOME}/Developer/FreightWise/FreightWise/dev/tools/fw-cli/.zshrc" && source "${HOME}/Developer/FreightWise/FreightWise/dev/tools/fw-cli/.zshrc"
+[ -f "$HOME/env-provision/shared-envs/root.env" ] && set -a && source "$HOME/env-provision/shared-envs/root.env" && set +a
 eval "$(/opt/homebrew/bin/brew shellenv)"
 alias sed='gsed'
 export PATH="$PATH:/opt/homebrew/opt/postgresql@12/bin"
